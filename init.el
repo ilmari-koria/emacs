@@ -397,6 +397,11 @@
                                   (?5 . "#5")
                                   (?6 . "#6"))))
 
+;; linkmarks
+(add-to-list 'load-path "~/my-files/emacs/init/my-elisp/linkmarks")
+(require 'linkmarks)
+(setq linkmarks-file "~/my-files/emacs/org/linkmarks/linkmarks.org")
+
 
 ;; agenda custom commands
 (setq org-agenda-custom-commands
