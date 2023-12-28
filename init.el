@@ -29,7 +29,6 @@
 (setq ring-bell-function 'ignore)
 (setq sentence-end-double-space nil)
 (setq system-time-locale "C")
-(setq scroll-bar-mode nil)
 (setq warning-minimum-level :emergency)
 (setq large-file-warning-threshold nil)
 (setq word-wrap-by-category t)
@@ -106,19 +105,28 @@
 (set-default 'truncate-lines t)
 (global-auto-revert-mode)
 (global-hl-line-mode 1)
-(scroll-bar-mode -1)
 (blink-cursor-mode -1)
 (column-number-mode t)
+(menu-bar-mode -1)
 
 ;; load path
 (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/")
 
 ;; recentf
-(recentf-mode t)
+(use-package recentf
+:config
 (setq recentf-max-menu-items 10)
-(setq recentf-max-saved-items 50)
-(setq recentf-exclude '("/\\(\\(\\(COMMIT\\|NOTES\\|PULLREQ\\|MERGEREQ\\|TAG\\)_EDIT\\|MERGE_\\|\\)MSG\\|\\(BRANCH\\|EDIT\\)_DESCRIPTION\\)\\'" "bookmark"))
-(setq recentf-filename-handlers '(abbreviate-file-name))
+(setq recentf-max-saved-items 10)
+(setq recentf-filename-handlers  
+      (append '(abbreviate-file-name) recentf-filename-handlers))  
+
+;; TODO fix escape chars
+ ;; (setq recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
+ ;;                        "\\\\.mime-example" "\\\\.ido.last" "COMMIT\_EDITMSG"
+ ;;                        ".gz" "\~$" "/tmp/" "/ssh:" "/sudo:" "/scp:")
+
+(recentf-load-list)
+(recentf-mode 1))
 
 
 ;; -------------------------------------------------- ;;
@@ -174,21 +182,6 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-;; -------------------------------------------------- ;;
-;; PDF                                                ;;
-;; -------------------------------------------------- ;;
-
-(use-package pdf-tools
-  :ensure t
-  :mode (("\\.pdf\\'" . pdf-view-mode))
-  :config
-  (pdf-tools-install)
-  (pdf-loader-install)
-  (setq pdf-view-use-scaling)
-  (setq pdf-view-use-imagemagick nil))
-
-  (add-hook 'pdf-view-mode-hook (lambda () (pdf-view-themed-minor-mode)))
-  (setq revert-without-query '(".pdf"))
 
 ;; -------------------------------------------------- ;;
 ;; OPEN WITH                                          ;;
@@ -344,7 +337,6 @@
 ;; -------------------------------------------------- ;;
 
 ;; agenda basic
-(setq org-agenda-files '("/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org" "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org"))
 (setq org-agenda-start-on-weekday nil)
 (setq org-agenda-include-diary t)
 (setq org-agenda-window-setup 'only-window)
@@ -369,8 +361,8 @@
   (beginning-of-line))
 (setq org-speed-commands (cons '("w" . widen) org-speed-commands))
 (define-key org-mode-map (kbd "^") 'org-sort)
-(define-key org-mode-map (kbd "z") 'org-refile)
-(define-key org-mode-map (kbd "C-= ,") 'my-org-jump-nearest-heading)
+;; (define-key org-mode-map (kbd "z") 'org-refile)
+(define-key org-mode-map (kbd "C-c ,") 'my-org-jump-nearest-heading)
 
 ;; org priorities
 (setq org-enable-priority-commands t)
@@ -398,6 +390,10 @@
                                   (?6 . "#6"))))
 
 ;; linkmarks
+;; dash dependency
+(use-package dash
+  :ensure t)
+
 (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/linkmarks")
 (require 'linkmarks)
 (setq linkmarks-file "~/my-files/emacs/org/linkmarks/linkmarks.org")
@@ -487,7 +483,7 @@
                               ("pq" "quick-clock-in-immediate" entry (file+headline "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{Description} :PHD:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
                               ("pn" "quick-no-clock-in-immediate" entry (file+headline "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{Description} :PHD:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
                               ("pf" "fleeting" entry (file+headline "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{Description} :PHD:FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("pd" "bib-reference-pdf" entry (file+headline "/home/ilmari/my-files/projects/phd/roam/bibliography/bib.org" "bib")   "* \n:PROPERTIES:\n:ADDED: %U\n:END:\n#+begin_src bibtex\n#+end_src\n#+begin_notes\n#+end_notes\n" :create-id t :store-pdf t)
+                              ("pd" "bib-reference-pdf" entry (file+headline "/home/ilmari/my-files/projects/phd/roam/bibliography/bib.org" "bib") "* \n:PROPERTIES:\n:ADDED: %U\n:END:\n#+begin_src bibtex\n#+end_src\n#+begin_notes\n#+end_notes\n" :create-id t :store-pdf t :jump-to-captured t)
                               ("pb" "bib-reference" entry (file+headline "/home/ilmari/my-files/projects/phd/roam/bibliography/bib.org" "bib")(function my-insert-bib-template-basic) :create-id t)
                               ("ph" "highlight-todo" entry (file+olp "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{Description} :PHD:\nSCHEDULED: <%<%Y-%m-%d %a>>\n %a\n %i" :immediate-finish t)
 
@@ -496,21 +492,9 @@
                               ("k" "anki")
                               ("km" "anki-cloze-python" entry (file "~/my-files/anki/udemy/math-python.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: math-cloze\n:END:\n** expression\n%^{expression}\n*** Exercises\n")
 
-                              ("a" "Secondary Reference")
-                              ("ab" "text-reference" entry (file+headline "/home/ilmari/my-files/emacs/org/roam/bibliography/bibliography.org" "Secondary Sources, Text")(function my-insert-bib-template-basic) :create-id t :store-pdf t)))
+                              ("c" "Secondary Reference")
+                              ("cb" "text-reference" entry (file+headline "/home/ilmari/my-files/emacs/org/roam/bibliography/bibliography.org" "Secondary Sources, Text")"* \n:PROPERTIES:\n:ADDED: %U\n:END:\n#+begin_src bibtex\n#+end_src\n#+begin_notes\n#+end_notes\n" :create-id t :jump-to-captured t)))
 
-;; helper function bib capture
-(defun my-insert-bib-template-basic ()
-  "*
-   :PROPERTIES:
-   :ADDED: %U
-   :END:
-
-   \#+begin_src bibtex
-   \#+end_src
-
-   \#+begin_notes
-   \#+end_notes")
 
 ;; helper functions anki
 (defvar cloze-counter 1)
@@ -646,7 +630,7 @@
   (setq org-ref-activate-cite-links t)
   (setq org-ref-cite-insert-version 2)
   (setq org-ref-show-broken-links nil)
-  (setq bibtex-completion-bibliography '("~/my-files/emacs/org/roam/bibliography/bibliography.bib" "/home/ilmari/my-files/projects/phd/roam/bibliography/bib.bib"))
+  (setq bibtex-completion-bibliography '("/home/ilmari/my-files/zotero/bibliography.bib"))
   (setq bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n")
   (setq bibtex-completion-additional-search-fields '(keywords))
   (setq bibtex-completion-display-formats
@@ -659,14 +643,14 @@
         (lambda (fpath)
           (call-process "open" nil 0 nil fpath)))
   (require 'org-ref)
-  (define-key org-mode-map (kbd "C-= ]") 'org-ref-insert-link))
+  (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link))
 
 ;; org roam
 (use-package org-roam
   :ensure t
   :config
   (setq org-roam-v2-ack t)
-  (setq org-roam-directory (file-truename "~/my-files/projects/phd/roam/"))
+  (setq org-roam-directory (file-truename "/home/ilmari/my-files/emacs/org/roam"))
   (setq org-roam-completion-everywhere t)
   (setq org-roam-node-display-template (concat "${type:15} | "
 					       (propertize "${tags:40}" 'face 'org-tag)" | ${title:*}"))
@@ -682,7 +666,8 @@
 	  ("misc" . "/home/ilmari/my-files/emacs/org/roam")))
   (setq org-roam-capture-templates '(
                                      ("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t)
-                                     ("p" "permanent" plain "%?" :target (file+head "permanent-notes/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)
+                                     ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)
+                                     ("r" "reference" plain "%?" :target (file+head "reference/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :unnarrowed t)
                                      ))
 
   (add-to-list 'display-buffer-alist
@@ -717,6 +702,13 @@
 
   (org-roam-db-autosync-mode)) ;; org roam ends here
 
+(use-package org-roam-bibtex
+  :ensure t
+  :after org-roam
+  :config
+  (require 'org-ref))
+
+
 ;; org hooks
 (add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook 'writegood-mode)
@@ -731,7 +723,7 @@
 (add-hook 'dired-mode-hook
           (lambda ()
             (define-key dired-mode-map
-              (kbd "C-! C-a")
+              (kbd "C-c C-a")
               #'org-attach-dired-to-subtree)))
 
 ;; org pomodoro
@@ -929,16 +921,8 @@
   :ensure t)
 
 ;; latex
-(use-package auctex
-  :ensure t
-  :config
-  (load "auctex.el" nil t t))
-
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
-(setq TeX-PDF-mode t)
-(setq reftex-plug-into-AUCTeX t)
-(setq TeX-source-correlate-start-server t)
 
 (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 (add-hook 'latex-mode-hook 'format-all-mode)
@@ -963,7 +947,9 @@
 
 ;; magit
 (use-package magit
-  :ensure t)
+  :ensure t
+  :config
+  (setq package-install-upgrade-built-in t))
 
 ;; golden ration
 (use-package golden-ratio
@@ -1007,17 +993,18 @@
   :ensure t)
 
 (defun my-sort-bindings ()
+  ;; sort bindings regexp
   (interactive)
   (sort-regexp-fields nil "^.*$" "\(kbd \"[^\"]+\"\)"
                     (region-beginning)
                     (region-end)))
 
 ;; dangerous bindings
-(global-set-key (kbd "C-! C-a") 'org-attach-dired-to-subtree)
-(global-set-key (kbd "C-! C-i") 'org-id-get-create)
-(global-set-key (kbd "C-! C-k") 'save-buffers-kill-emacs)
-(global-set-key (kbd "C-! C-l") 'org-toggle-link-display)
-(global-set-key (kbd "C-! C-t") 'dired-toggle-read-only)
+(global-set-key (kbd "C-c M-a") 'org-attach-dired-to-subtree)
+(global-set-key (kbd "C-c M-i") 'org-id-get-create)
+(global-set-key (kbd "C-c M-k") 'save-buffers-kill-emacs)
+(global-set-key (kbd "C-c M-l") 'org-toggle-link-display)
+(global-set-key (kbd "C-c M-t") 'dired-toggle-read-only)
 
 ;; generic bindings
 (global-set-key (kbd "<f5>" ) 'async-shell-command)
@@ -1025,40 +1012,40 @@
 
 ;; TODO sort these out
 ;; TODO remove org bindings and use speed org
-(global-set-key (kbd "C-= .") 'recentf-open-files)
-(global-set-key (kbd "C-= 1") 'elfeed)
-(global-set-key (kbd "C-= =") 'dired-up-directory)
-(global-set-key (kbd "C-= R") 'org-refile)
+(global-set-key (kbd "C-c .") 'recentf-open-files)
+(global-set-key (kbd "C-c E") 'elfeed)
+(global-set-key (kbd "C-c R") 'org-refile)
 (global-set-key (kbd "C-c 0") 'org-insert-structure-template)
 (global-set-key (kbd "C-c W") 'widen)
-(define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
+(global-set-key (kbd "C-c I") 'org-ref-insert-link)
 
-(global-set-key (kbd "C-= a") 'org-agenda)
-(global-set-key (kbd "C-= b") 'format-all-buffer)
-(global-set-key (kbd "C-= c") 'comment-region)
-(global-set-key (kbd "C-= d") 'org-deadline)
-(global-set-key (kbd "C-= e") 'org-sort)
-(global-set-key (kbd "C-= f") 'whitespace-mode)
-(global-set-key (kbd "C-= g") 'org-schedule)
-(global-set-key (kbd "C-= h") 'hl-line-mode)
-(global-set-key (kbd "C-= i") 'org-store-link)
-(global-set-key (kbd "C-= j") 'org-wc-display)
-(global-set-key (kbd "C-= k") 'clone-indirect-buffer)
-(global-set-key (kbd "C-= l") 'flyspell-popup-correct)
-(global-set-key (kbd "C-= m") 'overwrite-mode)
-(global-set-key (kbd "C-= n") 'my-org-capture-at-point)
-(global-set-key (kbd "C-= o") 'org-narrow-to-subtree)
-(global-set-key (kbd "C-= p") 'org-pomodoro)
-(global-set-key (kbd "C-= q") 'my-surround-region-with-actual-quotes)
-(global-set-key (kbd "C-= r") 'replace-regexp)
-(global-set-key (kbd "C-= s") 'count-words-region)
-(global-set-key (kbd "C-= t") 'my-ispell-add-word)
-(global-set-key (kbd "C-= u") 'uncomment-region)
-(global-set-key (kbd "C-= v") 'visual-line-mode)
-(global-set-key (kbd "C-= w") 'flyspell-buffer)
-(global-set-key (kbd "C-= x") 'hl-tags-mode)
-(global-set-key (kbd "C-= y") 'org-insert-heading-after-current)
-(global-set-key (kbd "C-= z" ) 'olivetti-mode)
+(global-set-key (kbd "C-c a") 'org-agenda)
+(global-set-key (kbd "C-c b") 'format-all-buffer)
+(global-set-key (kbd "C-c c") 'comment-region)
+(global-set-key (kbd "C-c d") 'org-deadline)
+(global-set-key (kbd "C-c e") 'org-sort)
+(global-set-key (kbd "C-c f") 'whitespace-mode)
+(global-set-key (kbd "C-c g") 'org-schedule)
+(global-set-key (kbd "C-c h") 'hl-line-mode)
+(global-set-key (kbd "C-c i") 'org-store-link)
+(global-set-key (kbd "C-c j") 'org-wc-display)
+(global-set-key (kbd "C-c k") 'clone-indirect-buffer)
+(global-set-key (kbd "C-c l") 'linkmarks-select)
+(global-set-key (kbd "C-c L") 'linkmarks-capture)
+(global-set-key (kbd "C-c m") 'overwrite-mode)
+(global-set-key (kbd "C-c n") 'my-org-capture-at-point)
+(global-set-key (kbd "C-c o") 'org-narrow-to-subtree)
+(global-set-key (kbd "C-c p") 'org-pomodoro)
+(global-set-key (kbd "C-c q") 'my-surround-region-with-actual-quotes)
+(global-set-key (kbd "C-c r") 'replace-regexp)
+(global-set-key (kbd "C-c s") 'count-words-region)
+(global-set-key (kbd "C-c t") 'my-ispell-add-word)
+(global-set-key (kbd "C-c u") 'uncomment-region)
+(global-set-key (kbd "C-c v") 'visual-line-mode)
+(global-set-key (kbd "C-c w") 'flyspell-buffer)
+(global-set-key (kbd "C-c x") 'hl-tags-mode)
+(global-set-key (kbd "C-c y") 'org-insert-heading-after-current)
+; (global-set-key (kbd "C-c z" ) 'olivetti-mode)
 
 ;; roam bindings
 (global-set-key (kbd "C-c n c") 'org-roam-capture)
@@ -1073,25 +1060,19 @@
 (global-set-key (kbd "C-c n s") 'deft)
 
 ;; multiple cursors
-(global-set-key (kbd "C-M-j") 'mc/mark-all-dwim)
-(global-set-key (kbd "C-M-c") 'mc/edit-lines)
-(global-set-key (kbd "C-M-l") 'er/expand-region)
-(global-set-key (kbd "C-M-/") 'mc/mark-all-like-this)
-(global-set-key (kbd "C-M-,") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-M-.") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-M->") 'mc/skip-to-previous-like-this)
-(global-set-key (kbd "C-M-<") 'mc/skip-to-next-like-this)
-(global-set-key (kbd "C-M-s") 'just-one-space)
+(global-set-key (kbd "C-M-a") 'mc/mark-all-dwim)
+(global-set-key (kbd "C-M-e") 'mc/edit-lines)
+(global-set-key (kbd "C-M-x") 'er/expand-region) ;
+(global-set-key (kbd "C-M-t") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-M-p") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-M-n") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-M-s") 'mc/skip-to-previous-like-this)
+(global-set-key (kbd "C-M-d") 'mc/skip-to-next-like-this)
+(global-set-key (kbd "C-M-o") 'just-one-space)
 (global-set-key (kbd "C-M-y") 'mc/insert-numbers) ;; (C-u-1-0) -- also (rectangle-number-lines)
-(global-set-key (kbd "C-'") 'mc/hide-unmatched-lines-mode)
-(global-set-key (kbd "C-M-n") 'electric-newline-and-maybe-indent)
+(global-set-key (kbd "C-M-u") 'mc/hide-unmatched-lines-mode)
+(global-set-key (kbd "C-M-l") 'electric-newline-and-maybe-indent)
 
-;; anki
-(global-set-key (kbd "C-: c") 'my-anki-cloze)
-(global-set-key (kbd "C-: r") 'my-reset-cloze-counter)
-(global-set-key (kbd "C-: s") 'my-set-cloze-counter)
-(global-set-key (kbd "C-: m") 'my-mark-and-run-my-anki-cloze)
-(global-set-key (kbd "C-: p") 'python-anki)
 
 ;; -------------------------------------------------- ;;
 ;; ADDED BY EMACS                                     ;;
@@ -1109,25 +1090,15 @@
  '(bibtex-autokey-year-title-separator "")
  '(blink-cursor-mode nil)
  '(column-number-mode t)
- '(custom-enabled-themes '(modus-vivendi))
- '(custom-safe-themes
-   '("2cc1b50120c0d608cc5064eb187bcc22c50390eb091fddfa920bf2639112adb6" "fc608d4c9f476ad1da7f07f7d19cc392ec0fb61f77f7236f2b6b42ae95801a62" "69f7e8101867cfac410e88140f8c51b4433b93680901bb0b52014144366a08c8" "21e3d55141186651571241c2ba3c665979d1e886f53b2e52411e9e96659132d4" "eb50f36ed5141c3f702f59baa1968494dc8e9bd22ed99d2aaa536c613c8782db" "4320a92406c5015e8cba1e581a88f058765f7400cf5d885a3aa9b7b9fc448fa7" default))
  '(global-hl-line-mode t)
  '(ispell-highlight-face 'flyspell-incorrect)
  '(org-agenda-files
-   '("/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org" "/home/ilmari/my-files/emacs/org/journal/2023-journal.org"))
+   '("/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org" "/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org"))
  '(org-pomodoro-keep-killed-pomodoro-time t)
  '(org-pomodoro-long-break-frequency 5)
  '(org-pomodoro-long-break-length 10)
  '(org-tags-column 100)
  '(package-selected-packages
-   '(golden-ratio org-fancy-priorities auctex org-bullets lua-mode anki-editor openwith pdf-tools orderless vertico writegood-mode wrap-region wc-mode use-package tablist rainbow-mode rainbow-delimiters palimpsest org-wc org-roam-ui org-ref org-pomodoro org-make-toc org-journal org-contrib org-appear multiple-cursors move-text modus-themes magit key-chord free-keys format-all expand-region engine-mode elfeed-org deft backup-each-save))
+   '(org-roam-bibtex golden-ratio org-fancy-priorities auctex org-bullets lua-mode anki-editor openwith pdf-tools orderless vertico writegood-mode wrap-region wc-mode use-package tablist rainbow-mode rainbow-delimiters palimpsest org-wc org-roam-ui org-ref org-pomodoro org-make-toc org-journal org-contrib org-appear multiple-cursors move-text modus-themes magit key-chord free-keys format-all expand-region engine-mode elfeed-org deft backup-each-save))
  '(save-abbrevs t)
  '(tool-bar-mode nil))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "Noto Sans Mono" :foundry "GOOG" :slant normal :weight normal :height 143 :width normal))))
- '(hl-line ((t nil))))
