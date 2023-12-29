@@ -29,6 +29,7 @@
 (setq ring-bell-function 'ignore)
 (setq sentence-end-double-space nil)
 (setq system-time-locale "C")
+(setq scroll-bar-mode nil)
 (setq warning-minimum-level :emergency)
 (setq large-file-warning-threshold nil)
 (setq word-wrap-by-category t)
@@ -105,9 +106,9 @@
 (set-default 'truncate-lines t)
 (global-auto-revert-mode)
 (global-hl-line-mode 1)
+(scroll-bar-mode -1)
 (blink-cursor-mode -1)
 (column-number-mode t)
-(menu-bar-mode -1)
 
 ;; load path
 ;; TODO check best practice for load path
@@ -117,20 +118,11 @@
 
 
 ;; recentf
-(use-package recentf
-:config
+(recentf-mode t)
 (setq recentf-max-menu-items 10)
-(setq recentf-max-saved-items 10)
-(setq recentf-filename-handlers  
-      (append '(abbreviate-file-name) recentf-filename-handlers))  
-
-;; TODO fix escape chars
- ;; (setq recentf-exclude '("/auto-install/" ".recentf" "/repos/" "/elpa/"
- ;;                        "\\\\.mime-example" "\\\\.ido.last" "COMMIT\_EDITMSG"
- ;;                        ".gz" "\~$" "/tmp/" "/ssh:" "/sudo:" "/scp:")
-
-(recentf-load-list)
-(recentf-mode 1))
+(setq recentf-max-saved-items 50)
+(setq recentf-exclude '("/\\(\\(\\(COMMIT\\|NOTES\\|PULLREQ\\|MERGEREQ\\|TAG\\)_EDIT\\|MERGE_\\|\\)MSG\\|\\(BRANCH\\|EDIT\\)_DESCRIPTION\\)\\'" "bookmark"))
+(setq recentf-filename-handlers '(abbreviate-file-name))
 
 
 ;; -------------------------------------------------- ;;
@@ -338,10 +330,6 @@
                                     (?6 . "#6"))))
 
 ;; linkmarks
-;; dash dependency
-(use-package dash
-  :ensure t)
-
 (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/linkmarks")
 (require 'linkmarks)
 (setq linkmarks-file "~/my-files/emacs/org/linkmarks/linkmarks.org")
@@ -546,13 +534,6 @@
       (error "")))
   (org-roam-db-autosync-mode)) ;; org roam ends here
 
-(use-package org-roam-bibtex
-  :ensure t
-  :after org-roam
-  :config
-  (require 'org-ref))
-
-
 ;; org hooks
 (add-hook 'org-mode-hook 'visual-line-mode)
 (add-hook 'org-mode-hook 'writegood-mode)
@@ -726,8 +707,16 @@
   :ensure t)
 
 ;; latex
+(use-package auctex
+  :ensure t
+  :config
+  (load "auctex.el" nil t t))
+
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
+(setq TeX-PDF-mode t)
+(setq reftex-plug-into-AUCTeX t)
+(setq TeX-source-correlate-start-server t)
 
 (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
 (add-hook 'latex-mode-hook 'format-all-mode)
@@ -752,9 +741,7 @@
 
 ;; magit
 (use-package magit
-  :ensure t
-  :config
-  (setq package-install-upgrade-built-in t))
+  :ensure t)
 
 ;; golden ration
 (use-package golden-ratio
@@ -797,11 +784,11 @@
   :ensure t)
 
 ;; dangerous bindings
-(global-set-key (kbd "C-c M-a") 'org-attach-dired-to-subtree)
-(global-set-key (kbd "C-c M-i") 'org-id-get-create)
-(global-set-key (kbd "C-c M-k") 'save-buffers-kill-emacs)
-(global-set-key (kbd "C-c M-l") 'org-toggle-link-display)
-(global-set-key (kbd "C-c M-t") 'dired-toggle-read-only)
+(global-set-key (kbd "C-! C-a") 'org-attach-dired-to-subtree)
+(global-set-key (kbd "C-! C-i") 'org-id-get-create)
+(global-set-key (kbd "C-! C-k") 'save-buffers-kill-emacs)
+(global-set-key (kbd "C-! C-l") 'org-toggle-link-display)
+(global-set-key (kbd "C-! C-t") 'dired-toggle-read-only)
 
 ;; generic bindings
 (global-set-key (kbd "<f5>" ) 'async-shell-command)
@@ -809,40 +796,40 @@
 
 ;; TODO sort these out
 ;; TODO remove org bindings and use speed org
-(global-set-key (kbd "C-c .") 'recentf-open-files)
-(global-set-key (kbd "C-c E") 'elfeed)
-(global-set-key (kbd "C-c R") 'org-refile)
+(global-set-key (kbd "C-= .") 'recentf-open-files)
+(global-set-key (kbd "C-= 1") 'elfeed)
+(global-set-key (kbd "C-= =") 'dired-up-directory)
+(global-set-key (kbd "C-= R") 'org-refile)
 (global-set-key (kbd "C-c 0") 'org-insert-structure-template)
 (global-set-key (kbd "C-c W") 'widen)
-(global-set-key (kbd "C-c I") 'org-ref-insert-link)
+(define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
 
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c b") 'format-all-buffer)
-(global-set-key (kbd "C-c c") 'comment-region)
-(global-set-key (kbd "C-c d") 'org-deadline)
-(global-set-key (kbd "C-c e") 'org-sort)
-(global-set-key (kbd "C-c f") 'whitespace-mode)
-(global-set-key (kbd "C-c g") 'org-schedule)
-(global-set-key (kbd "C-c h") 'hl-line-mode)
-(global-set-key (kbd "C-c i") 'org-store-link)
-(global-set-key (kbd "C-c j") 'org-wc-display)
-(global-set-key (kbd "C-c k") 'clone-indirect-buffer)
-(global-set-key (kbd "C-c l") 'linkmarks-select)
-(global-set-key (kbd "C-c L") 'linkmarks-capture)
-(global-set-key (kbd "C-c m") 'overwrite-mode)
-(global-set-key (kbd "C-c n") 'my-org-capture-at-point)
-(global-set-key (kbd "C-c o") 'org-narrow-to-subtree)
-(global-set-key (kbd "C-c p") 'org-pomodoro)
-(global-set-key (kbd "C-c q") 'my-surround-region-with-actual-quotes)
-(global-set-key (kbd "C-c r") 'replace-regexp)
-(global-set-key (kbd "C-c s") 'count-words-region)
-(global-set-key (kbd "C-c t") 'my-ispell-add-word)
-(global-set-key (kbd "C-c u") 'uncomment-region)
-(global-set-key (kbd "C-c v") 'visual-line-mode)
-(global-set-key (kbd "C-c w") 'flyspell-buffer)
-(global-set-key (kbd "C-c x") 'hl-tags-mode)
-(global-set-key (kbd "C-c y") 'org-insert-heading-after-current)
-; (global-set-key (kbd "C-c z" ) 'olivetti-mode)
+(global-set-key (kbd "C-= a") 'org-agenda)
+(global-set-key (kbd "C-= b") 'format-all-buffer)
+(global-set-key (kbd "C-= c") 'comment-region)
+(global-set-key (kbd "C-= d") 'org-deadline)
+(global-set-key (kbd "C-= e") 'org-sort)
+(global-set-key (kbd "C-= f") 'whitespace-mode)
+(global-set-key (kbd "C-= g") 'org-schedule)
+(global-set-key (kbd "C-= h") 'hl-line-mode)
+(global-set-key (kbd "C-= i") 'org-store-link)
+(global-set-key (kbd "C-= j") 'org-wc-display)
+(global-set-key (kbd "C-= k") 'clone-indirect-buffer)
+(global-set-key (kbd "C-= l") 'flyspell-popup-correct)
+(global-set-key (kbd "C-= m") 'overwrite-mode)
+(global-set-key (kbd "C-= n") 'my-org-capture-at-point)
+(global-set-key (kbd "C-= o") 'org-narrow-to-subtree)
+(global-set-key (kbd "C-= p") 'org-pomodoro)
+(global-set-key (kbd "C-= q") 'my-surround-region-with-actual-quotes)
+(global-set-key (kbd "C-= r") 'replace-regexp)
+(global-set-key (kbd "C-= s") 'count-words-region)
+(global-set-key (kbd "C-= t") 'my-ispell-add-word)
+(global-set-key (kbd "C-= u") 'uncomment-region)
+(global-set-key (kbd "C-= v") 'visual-line-mode)
+(global-set-key (kbd "C-= w") 'flyspell-buffer)
+(global-set-key (kbd "C-= x") 'hl-tags-mode)
+(global-set-key (kbd "C-= y") 'org-insert-heading-after-current)
+(global-set-key (kbd "C-= z" ) 'olivetti-mode)
 
 ;; roam bindings
 (global-set-key (kbd "C-c n c") 'org-roam-capture)
@@ -857,19 +844,25 @@
 (global-set-key (kbd "C-c n s") 'deft)
 
 ;; multiple cursors
-(global-set-key (kbd "C-M-a") 'mc/mark-all-dwim)
-(global-set-key (kbd "C-M-e") 'mc/edit-lines)
-(global-set-key (kbd "C-M-x") 'er/expand-region) ;
-(global-set-key (kbd "C-M-t") 'mc/mark-all-like-this)
-(global-set-key (kbd "C-M-p") 'mc/mark-previous-like-this)
-(global-set-key (kbd "C-M-n") 'mc/mark-next-like-this)
-(global-set-key (kbd "C-M-s") 'mc/skip-to-previous-like-this)
-(global-set-key (kbd "C-M-d") 'mc/skip-to-next-like-this)
-(global-set-key (kbd "C-M-o") 'just-one-space)
+(global-set-key (kbd "C-M-j") 'mc/mark-all-dwim)
+(global-set-key (kbd "C-M-c") 'mc/edit-lines)
+(global-set-key (kbd "C-M-l") 'er/expand-region)
+(global-set-key (kbd "C-M-/") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-M-,") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-M-.") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-M->") 'mc/skip-to-previous-like-this)
+(global-set-key (kbd "C-M-<") 'mc/skip-to-next-like-this)
+(global-set-key (kbd "C-M-s") 'just-one-space)
 (global-set-key (kbd "C-M-y") 'mc/insert-numbers) ;; (C-u-1-0) -- also (rectangle-number-lines)
-(global-set-key (kbd "C-M-u") 'mc/hide-unmatched-lines-mode)
-(global-set-key (kbd "C-M-l") 'electric-newline-and-maybe-indent)
+(global-set-key (kbd "C-'") 'mc/hide-unmatched-lines-mode)
+(global-set-key (kbd "C-M-n") 'electric-newline-and-maybe-indent)
 
+;; anki
+(global-set-key (kbd "C-: c") 'my-anki-cloze)
+(global-set-key (kbd "C-: r") 'my-reset-cloze-counter)
+(global-set-key (kbd "C-: s") 'my-set-cloze-counter)
+(global-set-key (kbd "C-: m") 'my-mark-and-run-my-anki-cloze)
+(global-set-key (kbd "C-: p") 'python-anki)
 
 
 ;; -------------------------------------------------- ;;
