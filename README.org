@@ -1,0 +1,10 @@
+My slightly haphazard .emacs file.
+
+#+begin_quote
+"Master, does Emacs possess the Buddha nature?" the novice asked.
+
+"I don't see why not," replied the master. "It's got bloody well everything else." Several years later, the novice suddenly achieved enlightenment.
+
+-- John Fouhy (Aptitude man-pages)
+#+end_quote
+

@@ -45,7 +45,7 @@
 (setq user-mail-address "ilmarikoria@posteo.net")
 
 ;; tramp and server
-(setq auth-sources '("~/.authinfo.gpg" "~/.authinfo" "~/.netrc"))
+(setq auth-sources '("~/.authinfo.gpg"))
 (setq tramp-verbose 1)
 (setq server-client-instructions nil)
 
@@ -110,7 +110,11 @@
 (menu-bar-mode -1)
 
 ;; load path
+;; TODO check best practice for load path
 (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/")
+(add-to-list 'load-path "~/my-files/emacs/init/")
+(load "helper-functions.el")
+
 
 ;; recentf
 (use-package recentf
@@ -128,40 +132,6 @@
 (recentf-load-list)
 (recentf-mode 1))
 
-
-;; -------------------------------------------------- ;;
-;; BIBTEX                                             ;;
-;; -------------------------------------------------- ;;
-
-(setq bibtex-autokey-edit-before-use nil)
-(setq bibtex-autokey-titleword-separator "")
-(setq bibtex-autokey-year-length 4)
-(setq bibtex-autokey-year-title-separator "")
-(setq bibtex-autokey-titleword-length 12)
-
-;; emacs bibtex doesn't provide a convenient way to order entries in bibkey creation
-(eval-after-load "bibtex"
-  '(defun bibtex-generate-autokey ()
-     (let* ((names (bibtex-autokey-get-names))
-            (title (bibtex-autokey-get-title))
-            (year (bibtex-autokey-get-year))
-            (autokey (concat
-                      bibtex-autokey-prefix-string
-                      names
-                      (unless (or (equal names "")
-                                  (equal title ""))
-                        "")
-                      title
-                      (unless (or (and (equal names "")
-                                       (equal title ""))
-                                  (equal year ""))
-                        bibtex-autokey-year-title-separator)
-                      year)))
-       (if bibtex-autokey-before-presentation-function
-           (funcall bibtex-autokey-before-presentation-function autokey)
-         autokey))))
-
-(add-hook 'bibtex-mode-hook 'format-all-mode)
 
 ;; -------------------------------------------------- ;;
 ;; COMPLETION                                         ;;
@@ -182,6 +152,21 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
+;; -------------------------------------------------- ;;
+;; PDF                                                ;;
+;; -------------------------------------------------- ;;
+
+(use-package pdf-tools
+  :ensure t
+  :mode (("\\.pdf\\'" . pdf-view-mode))
+  :config
+  (pdf-tools-install)
+  (pdf-loader-install)
+  (setq pdf-view-use-scaling)
+  (setq pdf-view-use-imagemagick nil)
+  (setq revert-without-query '(".pdf"))
+  (add-hook 'pdf-view-mode-hook (lambda () (pdf-view-themed-minor-mode))))
+
 
 ;; -------------------------------------------------- ;;
 ;; OPEN WITH                                          ;;
@@ -191,8 +176,7 @@
   :ensure t
   :config
   (openwith-mode t)
-  (setq openwith-associations '(
-                                ("\\.mp4\\'" "vlc" (file))
+  (setq openwith-associations '(("\\.mp4\\'" "vlc" (file))
                                 ("\\.wav\\'" "vlc" (file)))))
 
 ;; -------------------------------------------------- ;;
@@ -211,31 +195,12 @@
   :config
   (setq ispell-personal-dictionary "~/my-files/emacs/init/ispell-personal-dictionary")
   (setq ispell-silently-savep t)
-  (setq ispell-dictionary "en_GB"))
-
-;; helper function for adding words to personal dict
-(defun my-ispell-add-word ()
-  (interactive)
-  (let ((word (thing-at-point 'word)))
-    (ispell-send-string (concat "*" word "\n"))
-    (ispell-send-string "#\n")
-    (message "Word added to personal dictionary: %s" word)))
+  (setq ispell-dictionary "en_GB")
+  (setq ispell-highlight-face 'flyspell-incorrect))
 
 ;; palimpsest
 (use-package palimpsest
   :ensure t)
-
-;; helper function for counting words
-(defun my-sentence-counter ()
-  (interactive)
-  (forward-char)
-  (backward-sentence)
-  (set-mark-command nil)
-  (forward-sentence)
-  (message "There are *%s* words in this sentence."
-	   (count-words-region
-	    (region-beginning)
-	    (region-end))))
 
 ;; move text
 (use-package move-text
@@ -270,15 +235,6 @@
   (key-chord-define-global "jj" 'my-org-jump-nearest-heading)
   (key-chord-mode 1))
 
-;; helper function for adding quotes
-(defun my-surround-region-with-actual-quotes ()
-  (interactive)
-  (let ((start (region-beginning))
-        (end (region-end)))
-    (goto-char end)
-    (insert "’")
-    (goto-char start)
-    (insert "‘")))
 
 ;; -------------------------------------------------- ;;
 ;; ELFEED                                             ;;
@@ -294,7 +250,6 @@
   (setq url-queue-timeout 30)
   (setq shr-inhibit-images t)
   (setq elfeed-sort-order 'descending)
-  ;; disable spellcheck
   (setq flycheck-global-modes '(not . (elfeed-search-mode)))
   (add-hook 'elfeed-show-mode-hook 'visual-line-mode))
 
@@ -304,6 +259,7 @@
   (require 'elfeed-org)
   (elfeed-org)
   (setq rmh-elfeed-org-files (list "~/my-files/emacs/org/rss/rss-feed.org")))
+
 
 ;; -------------------------------------------------- ;;
 ;; SEARCHING                                          ;;
@@ -332,11 +288,13 @@
   (defengine thesaurus "https://www.thesaurus.com/browse/%s"
 	     :keybinding "t"))
 
+
 ;; -------------------------------------------------- ;;
 ;; ORG                                                ;;
 ;; -------------------------------------------------- ;;
 
 ;; agenda basic
+;; agenda files are handles by emacs
 (setq org-agenda-start-on-weekday nil)
 (setq org-agenda-include-diary t)
 (setq org-agenda-window-setup 'only-window)
@@ -346,23 +304,13 @@
 (setq holiday-bahai-holidays nil)
 (setq holiday-hebrew-holidays nil)
 (setq holiday-islamic-holidays nil)
-(setq diary-file "/home/ilmari/my-files/nextcloud/home-agenda/diary-google")
+(setq diary-file "~/my-files/nextcloud/home-agenda/diary-google")
 
 ;; tags
 (setq org-tag-alist '(("MEETING" . ?m) ("QA" . ?q) ("DEV" . ?d) ("MISC" . ?s) ("TRAINING" . ?t)))
 
 ;; -- org speed commands
-;; check https://www.youtube.com/watch?v=v-jLg1VaYzo
 (setq org-use-speed-commands t)
-(defun my-org-jump-nearest-heading ()
-  "move cursor to nearest org tree heading"
-  (interactive)
-  (org-back-to-heading)
-  (beginning-of-line))
-(setq org-speed-commands (cons '("w" . widen) org-speed-commands))
-(define-key org-mode-map (kbd "^") 'org-sort)
-;; (define-key org-mode-map (kbd "z") 'org-refile)
-(define-key org-mode-map (kbd "C-c ,") 'my-org-jump-nearest-heading)
 
 ;; org priorities
 (setq org-enable-priority-commands t)
@@ -383,11 +331,11 @@
   :config
   (add-hook 'org-agenda-mode-hook 'org-fancy-priorities-mode)
   (setq org-fancy-priorities-list '((?1 . "#1")
-                                  (?2 . "#2")
-                                  (?3 . "#3")
-                                  (?4 . "#4")
-                                  (?5 . "#5")
-                                  (?6 . "#6"))))
+                                    (?2 . "#2")
+                                    (?3 . "#3")
+                                    (?4 . "#4")
+                                    (?5 . "#5")
+                                    (?6 . "#6"))))
 
 ;; linkmarks
 ;; dash dependency
@@ -397,7 +345,6 @@
 (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/linkmarks")
 (require 'linkmarks)
 (setq linkmarks-file "~/my-files/emacs/org/linkmarks/linkmarks.org")
-
 
 ;; agenda custom commands
 (setq org-agenda-custom-commands
@@ -477,87 +424,11 @@
                               ("at" "tinker" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* DONE Tinkering :DEV:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-resume t)
                               ("ai" "misc" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* DONE Admin and misc tasks :MISC:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-resume t)
 
-                              ("p" "phd")
-                              ("pr" "quick-read-clock-in-immediate" entry (file+headline "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{BibTeX Key} :PHD:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("pp" "quick-read-pomodoro" entry (file+headline "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{BibTeX Key} :PHD:\nSCHEDULED: <%<%Y-%m-%d %a>>" :pomodoro t :immediate-finish t)
-                              ("pq" "quick-clock-in-immediate" entry (file+headline "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{Description} :PHD:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("pn" "quick-no-clock-in-immediate" entry (file+headline "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{Description} :PHD:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("pf" "fleeting" entry (file+headline "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{Description} :PHD:FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("pd" "bib-reference-pdf" entry (file+headline "/home/ilmari/my-files/projects/phd/roam/bibliography/bib.org" "bib") "* \n:PROPERTIES:\n:ADDED: %U\n:END:\n#+begin_src bibtex\n#+end_src\n#+begin_notes\n#+end_notes\n" :create-id t :store-pdf t :jump-to-captured t)
-                              ("pb" "bib-reference" entry (file+headline "/home/ilmari/my-files/projects/phd/roam/bibliography/bib.org" "bib")(function my-insert-bib-template-basic) :create-id t)
-                              ("ph" "highlight-todo" entry (file+olp "/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "TASK-INDEX") "\n* TODO %^{Description} :PHD:\nSCHEDULED: <%<%Y-%m-%d %a>>\n %a\n %i" :immediate-finish t)
-
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
                               ("k" "anki")
                               ("km" "anki-cloze-python" entry (file "~/my-files/anki/udemy/math-python.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: math-cloze\n:END:\n** expression\n%^{expression}\n*** Exercises\n")
-
-                              ("c" "Secondary Reference")
-                              ("cb" "text-reference" entry (file+headline "/home/ilmari/my-files/emacs/org/roam/bibliography/bibliography.org" "Secondary Sources, Text")"* \n:PROPERTIES:\n:ADDED: %U\n:END:\n#+begin_src bibtex\n#+end_src\n#+begin_notes\n#+end_notes\n" :create-id t :jump-to-captured t)))
-
-
-;; helper functions anki
-(defvar cloze-counter 1)
-
-(defun my-anki-cloze ()
-  (interactive)
-  (let* ((start (region-beginning))
-         (end (region-end))
-         (content (buffer-substring start end)))
-    (goto-char start)
-    (delete-region start end)
-    (insert (format "{{c%d::%s}}" cloze-counter content))
-    (setq cloze-counter (+ cloze-counter 1))))
-
-(defun my-reset-cloze-counter ()
-  (interactive)
-  (setq cloze-counter 1)
-  (message "c-counter reset to 1"))
-
-(defun my-org-capture-reset-counter ()
-  (when (org-capture-get :reset-counter)
-    (my-reset-cloze-counter)))
-
-(defun my-set-cloze-counter (value)
-  (interactive "Set cloze-counter to: ")
-  (setq cloze-counter value)
-  (message "cloze-counter set to %d" value))
-
-(defun my-mark-and-run-my-anki-cloze ()
-  (interactive)
-  (let ((beg (car (bounds-of-thing-at-point 'word)))
-        (end (cdr (bounds-of-thing-at-point 'word))))
-    (if (and beg end)
-        (progn
-          (set-mark beg)
-          (goto-char end)
-          (activate-mark)
-          (my-anki-cloze))
-      (message "No word at point"))))
-
-;; helper function create id
-(defun my-org-capture-create-id ()
-  (when (org-capture-get :create-id)
-    (org-id-get-create)))
-(add-hook 'org-capture-mode-hook #'my-org-capture-create-id)
-
-;; helper function attach pdf
-(defun my-org-attach-file ()
-  (when (org-capture-get :store-pdf)
-    (let ((file-path (read-file-name "File path: " "~/Downloads/")))
-      (org-attach-attach file-path))))
-(add-hook 'org-capture-mode-hook #'my-org-attach-file)
-
-;; helper function start org pomodoro
-(defun my-start-pomodoro ()
-  (when (org-capture-get :pomodoro)
-    (org-pomodoro)))
-(add-hook 'org-capture-mode-hook #'my-start-pomodoro)
-
-;; helper function capture at point
-(defun my-org-capture-at-point ()
-  (interactive)
-  (org-capture 0))
+                              )) ;; capture ends here
 
 ;; org export misc
 (setq org-export-with-smart-quotes t)
@@ -591,13 +462,6 @@
   (ox-extras-activate
    '(ignore-headlines)))
 
-;; org bullets
-(use-package org-bullets
-  :ensure t
-  :config
-  (require 'org-bullets)
-  (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-
 ;; org misc
 (setq org-directory "~/my-files/emacs/org")
 (setq org-startup-folded t)
@@ -605,14 +469,13 @@
 (setq org-src-fontify-natively nil)
 (setq org-clock-into-drawer "CLOCK")
 (setq org-startup-truncated t)
-(setq org-use-speed-commands t)
 (setq org-image-actual-width '(200))
 (setq org-startup-indented t)
 (setq org-habit-following-days 1)
 (setq org-attach-auto-tag "attach")
 (setq org-use-tag-inheritance nil)
-(setq org-refile-use-outline-path 'file)
 (setq org-outline-path-complete-in-steps nil)
+(setq org-refile-use-outline-path 'file)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 
 ;; org archive
@@ -641,19 +504,23 @@
           (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}")))
   (setq bibtex-completion-pdf-open-function
         (lambda (fpath)
-          (call-process "open" nil 0 nil fpath)))
-  (require 'org-ref)
-  (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link))
+          (call-process "open" nil 0 nil fpath))))
+
+;; orb
+(use-package org-roam-bibtex
+  :ensure t
+  :after org-roam
+  :config
+  (require 'org-ref))
 
 ;; org roam
 (use-package org-roam
   :ensure t
   :config
   (setq org-roam-v2-ack t)
-  (setq org-roam-directory (file-truename "/home/ilmari/my-files/emacs/org/roam"))
+  (setq org-roam-directory (file-truename "~/my-files/emacs/org/roam"))
   (setq org-roam-completion-everywhere t)
-  (setq org-roam-node-display-template (concat "${type:15} | "
-					       (propertize "${tags:40}" 'face 'org-tag)" | ${title:*}"))
+  (setq org-roam-node-display-template (concat "${type:15} | " (propertize "${tags:40}" 'face 'org-tag)" | ${title:*}"))
   (setq org-roam-db-node-include-function
         (lambda ()
           (not (member "ATTACH" (org-get-tags)))
@@ -661,22 +528,15 @@
           (not (member "noexport" (org-get-tags)))
           (not (member "ignore" (org-get-tags)))
           (not (member "NOEXPORT" (org-get-tags)))))
-  (setq my-org-roam-context-alist
-        '(("phd" . "/home/ilmari/my-files/projects/phd/roam/")
-	  ("misc" . "/home/ilmari/my-files/emacs/org/roam")))
-  (setq org-roam-capture-templates '(
-                                     ("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t)
-                                     ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)
-                                     ("r" "reference" plain "%?" :target (file+head "reference/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :unnarrowed t)
-                                     ))
-
+  (setq org-roam-capture-templates '(("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t)
+                                     ("r" "reference" plain "%?" :target (file+head "reference-notes/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :unnarrowed t)                 
+                                     ("p" "permanent" plain "%?" :target (file+head "permanent-notes/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)))
   (add-to-list 'display-buffer-alist
 	       '("\\*org-roam\\*"
                  (display-buffer-in-direction)
                  (direction . right)
                  (window-width . 0.5)
                  (window-height . fit-window-to-buffer)))
-
   (cl-defmethod org-roam-node-type ((node org-roam-node))
     "Return the TYPE of NODE."
     (condition-case nil
@@ -684,22 +544,6 @@
 			         (file-name-directory
                                   (file-relative-name (org-roam-node-file node) org-roam-directory))))
       (error "")))
-
-  (defun my-org-roam-switch-context (c)
-    (interactive
-     (list (completing-read "Choose: " my-org-roam-context-alist nil t)))
-    (let* ((new-folder (cdr (assoc c my-org-roam-context-alist))))
-      (message "Setting org-roam folder to '%s'" new-folder)
-      (setq org-roam-directory new-folder)
-      (org-roam-db-sync) )
-    c)
-
-  (defun my-org-roam-capture-create-id ()
-    (when (and (not org-note-abort)
-               (org-roam-capture-p))
-      (org-roam-capture--put :id (org-id-get-create))))
-  (add-hook 'org-capture-prepare-finalize-hook 'my-org-roam-capture-create-id)
-
   (org-roam-db-autosync-mode)) ;; org roam ends here
 
 (use-package org-roam-bibtex
@@ -718,13 +562,6 @@
 (add-hook 'org-mode-hook 'flyspell-mode)
 (add-hook 'org-mode-hook 'abbrev-mode)
 (add-hook 'org-mode-hook 'hl-line-mode)
-
-;; helper hook attach file
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (define-key dired-mode-map
-              (kbd "C-c C-a")
-              #'org-attach-dired-to-subtree)))
 
 ;; org pomodoro
 (use-package org-pomodoro
@@ -745,15 +582,12 @@
 (setq org-export-babel-evaluate nil)
 (org-babel-do-load-languages
  'org-babel-load-languages
- '(
-   (python . t)
-   (latex . t)
-   ))
+ '((python . t)
+   (latex . t)))
 
 ;; babel kmacro add python src
 (fset 'python-anki
       (kmacro-lambda-form [?\C-c ?0 ?s ?p ?y ?t ?h ?o ?n ?  ?- ?n ?  ?: ?r ?e ?s ?u ?l ?t ?s ?  ?p backspace ?o ?u ?p backspace ?t ?p ?u ?t ?  ?: ?e ?x ?p ?o ?r ?t ?  ?b ?o ?t ?h] 0 "%d"))
-
 
 ;; org roam vis
 (use-package org-roam-ui
@@ -764,25 +598,15 @@
   (setq org-roam-ui-update-on-save t)
   (setq org-roam-ui-open-on-start t))
 
-;; helper function align tags
-(defun my-org-align-tags () (interactive)
-       (org-align-tags 100))
-(add-hook 'org-mode-hook
-	  (lambda ()
-	    (add-hook 'after-save-hook 'my-org-align-tags nil 'make-it-local)))
-
 ;; org wc
 (use-package org-wc
   :ensure t
   :config
   (setq org-wc-ignored-tags '("ARCHIVE")))
 
-;; org website
-;; currently tinkering with own version
-(add-to-list 'load-path "~/my-files/emacs/init/my-elisp/org-static-blog")
-
+;; website
 (use-package org-static-blog
-  ;; :ensure t
+  :ensure t
   :config
   (require 'org-static-blog)
   (setq org-static-blog-publish-title "Ilmari's Webpage")
@@ -826,20 +650,7 @@
                  </ul>"
                 (format-time-string "%b %e, %Y")
                 emacs-version
-                (org-version)))
-
-  ;; help function version printer
-  (defun my-version-info ()
-    (message "GNU Emacs version: %s and Org-mode version: %s"
-             emacs-version
-             (org-version)))
-
-  ;; helper function update blog
-  (defun my-update-blog ()
-    (interactive)
-    (find-file "~/my-files/emacs/org/roam/blog/")
-    (org-static-blog-publish)
-    (shell-command "bash update-website"))) ;; -- org static blog ends here
+                (org-version)))) ;; -- org static blog ends here
 
 ;; org appear - TODO what is this??
 (use-package org-appear
@@ -873,14 +684,8 @@
   (setq org-journal-file-format "%Y-journal.org")
   (setq org-journal-enable-agenda-integration t)
   (setq org-journal-file-type 'yearly)
-  (setq org-journal-file-header "#+title: %Y Journal\n#+filetags: log todo diary")
+  (setq org-journal-file-header "#+title: %Y Journal\n#+filetags: log todo diary"))
 
-  ;; helper function find location
-  (defun my-org-journal-find-location ()
-    (org-journal-new-entry t)
-    (unless (eq org-journal-file-type 'daily)
-      (org-narrow-to-subtree))
-    (goto-char (point-max))))
 
 ;; -------------------------------------------------- ;;
 ;; SCRIPTING/PROG                                     ;;
@@ -956,9 +761,7 @@
   :ensure t
   :config
   (require 'golden-ratio)
-  (golden-ratio-mode 1)
-  ; (setq golden-ratio-auto-scale t)
-  )
+  (golden-ratio-mode 1))
 
 ;; prog mode hooks
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
@@ -978,6 +781,7 @@
 (add-hook 'html-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'html-mode-hook 'multiple-cursors-mode)
 
+
 ;; -------------------------------------------------- ;;
 ;; STYLING                                            ;;
 ;; -------------------------------------------------- ;;
@@ -991,13 +795,6 @@
 ;; free keys
 (use-package free-keys
   :ensure t)
-
-(defun my-sort-bindings ()
-  ;; sort bindings regexp
-  (interactive)
-  (sort-regexp-fields nil "^.*$" "\(kbd \"[^\"]+\"\)"
-                    (region-beginning)
-                    (region-end)))
 
 ;; dangerous bindings
 (global-set-key (kbd "C-c M-a") 'org-attach-dired-to-subtree)
@@ -1074,31 +871,27 @@
 (global-set-key (kbd "C-M-l") 'electric-newline-and-maybe-indent)
 
 
+
 ;; -------------------------------------------------- ;;
 ;; ADDED BY EMACS                                     ;;
 ;; -------------------------------------------------- ;;
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(abbrev-file-name "~/my-files/emacs/init/abbrev_defs")
- '(bibtex-autokey-edit-before-use nil)
- '(bibtex-autokey-titleword-length 12)
- '(bibtex-autokey-titleword-separator "")
- '(bibtex-autokey-year-length 4)
- '(bibtex-autokey-year-title-separator "")
- '(blink-cursor-mode nil)
- '(column-number-mode t)
- '(global-hl-line-mode t)
- '(ispell-highlight-face 'flyspell-incorrect)
+ '(custom-enabled-themes '(modus-vivendi))
+ '(custom-safe-themes
+   '("2cc1b50120c0d608cc5064eb187bcc22c50390eb091fddfa920bf2639112adb6" "fc608d4c9f476ad1da7f07f7d19cc392ec0fb61f77f7236f2b6b42ae95801a62" "69f7e8101867cfac410e88140f8c51b4433b93680901bb0b52014144366a08c8" "21e3d55141186651571241c2ba3c665979d1e886f53b2e52411e9e96659132d4" "eb50f36ed5141c3f702f59baa1968494dc8e9bd22ed99d2aaa536c613c8782db" "4320a92406c5015e8cba1e581a88f058765f7400cf5d885a3aa9b7b9fc448fa7" default))
  '(org-agenda-files
-   '("/home/ilmari/my-files/projects/phd/phd-todo/phd-todo.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org" "/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org"))
- '(org-pomodoro-keep-killed-pomodoro-time t)
- '(org-pomodoro-long-break-frequency 5)
- '(org-pomodoro-long-break-length 10)
- '(org-tags-column 100)
+   '("/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org" "/home/ilmari/my-files/emacs/org/journal/2023-journal.org"))
  '(package-selected-packages
-   '(org-roam-bibtex golden-ratio org-fancy-priorities auctex org-bullets lua-mode anki-editor openwith pdf-tools orderless vertico writegood-mode wrap-region wc-mode use-package tablist rainbow-mode rainbow-delimiters palimpsest org-wc org-roam-ui org-ref org-pomodoro org-make-toc org-journal org-contrib org-appear multiple-cursors move-text modus-themes magit key-chord free-keys format-all expand-region engine-mode elfeed-org deft backup-each-save))
- '(save-abbrevs t)
- '(tool-bar-mode nil))
+   '(golden-ratio org-fancy-priorities auctex org-bullets lua-mode anki-editor openwith pdf-tools orderless vertico writegood-mode wrap-region wc-mode use-package tablist rainbow-mode rainbow-delimiters palimpsest org-wc org-roam-ui org-ref org-pomodoro org-make-toc org-journal org-contrib org-appear multiple-cursors move-text modus-themes magit key-chord free-keys format-all expand-region engine-mode elfeed-org deft backup-each-save)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(default ((t (:family "Noto Sans Mono" :foundry "GOOG" :slant normal :weight normal :height 143 :width normal))))
+ '(hl-line ((t nil))))
