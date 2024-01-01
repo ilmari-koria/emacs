@@ -349,6 +349,10 @@
 		   (org-agenda-entry-types '(:deadline))
 		   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
 		   (org-agenda-overriding-header "\nUPCOMING DEADLINES (+14d)")))
+          (todo "GOAL"
+                ((org-agenda-overriding-header "\nGOALS")
+                 (org-agenda-block-separator nil)
+		 (org-tags-match-list-sublevels t)))
           (todo "REMINDER"
                 ((org-agenda-overriding-header "\nREMINDERS")
                  (org-agenda-block-separator nil)
@@ -357,6 +361,7 @@
 		  ((org-agenda-block-separator nil)
 		   (org-agenda-span 1)
 		   (org-deadline-warning-days 0)
+                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("GOAL")))
 		   (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
 		   (org-agenda-overriding-header "\nTODAY'S TASKS")))
 	  (agenda ""
@@ -499,7 +504,8 @@
   :ensure t
   :after org-roam
   :config
-  (require 'org-ref))
+  (require 'org-ref)
+  (add-hook 'after-init-hook 'org-roam-bibtex-mode))
 
 ;; org roam
 (use-package org-roam
@@ -516,9 +522,9 @@
           (not (member "noexport" (org-get-tags)))
           (not (member "ignore" (org-get-tags)))
           (not (member "NOEXPORT" (org-get-tags)))))
-  (setq org-roam-capture-templates '(("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t)
-                                     ("r" "reference" plain "%?" :target (file+head "reference-notes/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :unnarrowed t)                 
-                                     ("p" "permanent" plain "%?" :target (file+head "permanent-notes/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)))
+  (setq org-roam-capture-templates '(("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t :jump-to-captured t)
+                                     ("r" "reference" plain "%?" :target (file+head "reference/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :jump-to-captured t :unnarrowed t)                 
+                                     ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :jump-to-captured t :unnarrowed t)))
   (add-to-list 'display-buffer-alist
 	       '("\\*org-roam\\*"
                  (display-buffer-in-direction)
@@ -595,7 +601,7 @@
   (setq org-static-blog-archive-file "posts.html")
   (setq org-static-blog-publish-directory "~/my-files/websites/ilmarikoria/")
   (setq org-static-blog-posts-directory "~/my-files/emacs/org/roam/blog/")
-  (setq org-static-blog-drafts-directory "~/my-files/emacs/org/roam/blog-drafts-dummy/")
+  (setq org-static-blog-drafts-directory "~/my-files/emacs/org/roam/blog-drafts-dummy/") ;; because org-static-blog-publish will publish drafts folder
   (setq org-static-blog-preview-date-first-p t)
   (setq org-static-blog-enable-tags nil)
   (setq org-static-blog-preview-ellipsis "")
@@ -621,17 +627,22 @@
                 <li><a href=\"https://ilmarikoria.xyz/podcast.html\">Podcast Editing Service</a></li>
                 <li><a href=\"https://nextcloud.ilmarikoria.xyz/\">Nextcloud</a></li>
                 <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
-                <li><a href=\"https://www.youtube.com/channel/UCIwGuCqBXzXGozj0YeAcOTA\">YouTube</a></li>
             </ul>")
   (setq org-static-blog-page-postamble
-        (format "<p id=\"metadata-stamp\">This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ Hosted on a <a href=\"https://www.debian.org\">Debian GNU/Linux 12</a> server.</p>
+        (format "<p id=\"metadata-stamp\">This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ Hosted on a <a href=\"https://www.debian.org\">GNU/Linux Debian</a> server.</p>
                  <ul>
                  <li><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a></li>
                  <li><a href=\"#top\">Top</a></li>
-                 </ul>"
+                 </ul>
+                 <div id=\"donation\"><p>Support this site?</p><ul>
+                 <li>Bitcoin (<code>BTC</code>): <code>bc1qt8f80q56rvlv40azdtj4rea60upk8kvs5elv3v</code></li>
+                 <li>Monero (<code>XMR</code>): <code>89SMd5nM1nZbw1DQht5c76g2YYtBRHqdrGuoT7DcErVH5TaY8KDupTWHdpReXc2qpkQLANz2xSt9N9KzYUGv6LmAEjcFjLo</code></li>
+                 </ul></div>
+                 "
                 (format-time-string "%b %e, %Y")
                 emacs-version
-                (org-version)))) ;; -- org static blog ends here
+                (org-version)))
+                ) ;; -- org static blog ends here
 
 ;; org appear - TODO what is this??
 (use-package org-appear

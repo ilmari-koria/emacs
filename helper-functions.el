@@ -92,7 +92,6 @@
   (org-align-tags 100))
 (add-hook 'org-mode-hook (lambda () (add-hook 'after-save-hook 'my-org-align-tags nil 'make-it-local)))
 
-
 (defun my-version-info ()
   ;; helper function version printer
   (message "GNU Emacs version: %s and Org-mode version: %s"
@@ -102,10 +101,10 @@
 (defun my-update-blog ()
   ;; helper function update blog
   (interactive)
+  (shell-command "bash check-and-delete-files")
   (find-file "~/my-files/emacs/org/roam/blog/")
   (org-static-blog-publish)
   (shell-command "bash update-website"))
-
 
 (defun my-org-journal-find-location ()
   ;; helper function find journal location
