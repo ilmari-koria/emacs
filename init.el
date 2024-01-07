@@ -523,7 +523,8 @@
           (not (member "ignore" (org-get-tags)))
           (not (member "NOEXPORT" (org-get-tags)))))
   (setq org-roam-capture-templates '(("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t :jump-to-captured t)
-                                     ("r" "reference" plain "%?" :target (file+head "reference/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :jump-to-captured t :unnarrowed t)                 
+                                     ("r" "reference" plain "%?" :target (file+head "reference/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :jump-to-captured t :unnarrowed t)
+                                     ("i" "index" plain "%?" :target (file+head "reference/index-${slug}.org" "#+title: ${title}") :jump-to-captured t :unnarrowed t)
                                      ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :jump-to-captured t :unnarrowed t)))
   (add-to-list 'display-buffer-alist
 	       '("\\*org-roam\\*"
@@ -635,14 +636,12 @@
                  <li><a href=\"#top\">Top</a></li>
                  </ul>
                  <div id=\"donation\"><p>Support this site?</p><ul>
-                 <li>Bitcoin (<code>BTC</code>): <code>bc1qt8f80q56rvlv40azdtj4rea60upk8kvs5elv3v</code></li>
-                 <li>Monero (<code>XMR</code>): <code>89SMd5nM1nZbw1DQht5c76g2YYtBRHqdrGuoT7DcErVH5TaY8KDupTWHdpReXc2qpkQLANz2xSt9N9KzYUGv6LmAEjcFjLo</code></li>
+                 <li>Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: <code id=\"bitcoin-address\">bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></li>
                  </ul></div>
                  "
                 (format-time-string "%b %e, %Y")
                 emacs-version
-                (org-version)))
-                ) ;; -- org static blog ends here
+                (org-version)))) ;; -- org static blog ends here
 
 ;; org appear - TODO what is this??
 (use-package org-appear
