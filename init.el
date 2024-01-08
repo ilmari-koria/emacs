@@ -114,7 +114,7 @@
 ;; TODO check best practice for load path
 (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/")
 (add-to-list 'load-path "~/my-files/emacs/init/")
-(load "helper-functions.el")
+(load "./helper-functions.el")
 
 
 ;; recentf
