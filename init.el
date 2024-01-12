@@ -610,13 +610,14 @@
   (setq org-static-blog-preview-start "")
   (setq org-static-blog-preview-end "")
   (setq org-static-blog-index-front-matter "<h2>About</h2>
-                                            <p>Hello! My name is Ilmari. This blog is simply for me to share my interests in software, sound and zen.</p> <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a> [<a href=\"https://ilmarikoria.xyz/static/ilmari-pub.asc\">GPG Key</a>].</p>
+                                            <p>Hello! My name is Ilmari. This blog is simply for me to share my interests in software, sound and zen.</p> <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a>.</p>
                                             <h2>Recent posts</h2>")
   (setq org-static-blog-page-header "<meta name=\"author\" content=\"Ilmari Koria, ilmarikoria@posteo.net\">
                                      <meta name=\"referrer\" content=\"no-referrer\">
                                      <meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=1.0,user-scalable=no\" />
                                      <link href=\"static/style.css\" rel=\"stylesheet\" type=\"text/css\" />
-                                     <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏞</text></svg>\">")
+                                     <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏞</text></svg>\">
+                                     ")
   (setq org-static-blog-page-preamble
         "<h1>Ilmari's Webpage</h1>
              <ul>
@@ -630,15 +631,8 @@
                 <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
             </ul>")
   (setq org-static-blog-page-postamble
-        (format "<p id=\"metadata-stamp\">This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ Hosted on a <a href=\"https://www.debian.org\">GNU/Linux Debian</a> server.</p>
-                 <ul>
-                 <li><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a></li>
-                 <li><a href=\"#top\">Top</a></li>
-                 </ul>
-                 <div id=\"donation\"><p>Support this site?</p><ul>
-                 <li>Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: <code id=\"bitcoin-address\">bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></li>
-                 </ul></div>
-                 "
+        (format "<p id=\"metadata-stamp\">This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ Hosted on a <a href=\"https://www.debian.org\">GNU/Linux Debian</a> server ❘ <a href=\"https://ilmarikoria.xyz/static/ilmari-pub.asc\">PGP Key</a> ❘ Support this site? <code id=\"bitcoin-donation\">Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: </code><code id=\"bitcoin-address\">bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></p>
+                 <p id=\"bottom-links\"><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a> ❘ <a href=\"#top\">Top</p>"
                 (format-time-string "%b %e, %Y")
                 emacs-version
                 (org-version)))) ;; -- org static blog ends here
