@@ -539,7 +539,11 @@
 			         (file-name-directory
                                   (file-relative-name (org-roam-node-file node) org-roam-directory))))
       (error "")))
-  (org-roam-db-autosync-mode)) ;; org roam ends here
+  (org-roam-db-autosync-mode)
+
+(add-hook 'org-roam-mode-hook #'visual-line-mode)
+(add-hook 'org-roam-mode-hook #'org-indent-mode)
+) ;; org roam ends here
 
 ;; org hooks
 (add-hook 'org-mode-hook 'visual-line-mode)
@@ -609,8 +613,11 @@
   (setq org-static-blog-use-preview t)
   (setq org-static-blog-preview-start "")
   (setq org-static-blog-preview-end "")
-  (setq org-static-blog-index-front-matter "<h2>About</h2>
-                                            <p>Hello! My name is Ilmari. This blog is simply for me to share my interests in software, sound and zen.</p> <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a>.</p>
+  (setq org-static-blog-index-front-matter "<div id=\"front-page-container\">
+                                            <div id=\"welcome\"><h2>About</h2>
+                                            <p>Hello! My name is Ilmari. This blog is simply for me to share my interests in software, sound and zen.</p> <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a>.</p></div>
+                                            <div id=\"profile-pic\"><figure><img src=\"./static/profile.png\" alt=\"Selfie of a Nordic caucasian man with short curly brown hair.\"><figcaption>‘Me / 2023.’</figcaption></figure></div>
+                                            </div>
                                             <h2>Recent posts</h2>")
   (setq org-static-blog-page-header "<meta name=\"author\" content=\"Ilmari Koria, ilmarikoria@posteo.net\">
                                      <meta name=\"referrer\" content=\"no-referrer\">
@@ -833,7 +840,7 @@
 (global-set-key (kbd "C-= w") 'flyspell-buffer)
 (global-set-key (kbd "C-= x") 'hl-tags-mode)
 (global-set-key (kbd "C-= y") 'org-insert-heading-after-current)
-(global-set-key (kbd "C-= z" ) 'olivetti-mode)
+(global-set-key (kbd "C-= z" ) 'my-sentence-counter)
 
 ;; roam bindings
 (global-set-key (kbd "C-c n c") 'org-roam-capture)
