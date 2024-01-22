@@ -636,6 +636,7 @@
                 <li><a href=\"https://ilmarikoria.xyz/podcast.html\">Podcast Editing Service</a></li>
                 <li><a href=\"https://nextcloud.ilmarikoria.xyz/\">Nextcloud</a></li>
                 <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
+                <li><a href=\"https://phonography.wiki/\">Phonography Wiki</a></li>
             </ul>")
   (setq org-static-blog-page-postamble
         (format "<p id=\"metadata-stamp\">This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ Hosted on a <a href=\"https://www.debian.org\">GNU/Linux Debian</a> server ❘ <a href=\"https://ilmarikoria.xyz/static/ilmari-pub.asc\">PGP Key</a> ❘ Support this site? <code id=\"bitcoin-donation\">Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: </code><code id=\"bitcoin-address\">bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></p>
@@ -891,7 +892,7 @@
  '(org-agenda-files
    '("/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org" "/home/ilmari/my-files/emacs/org/journal/2023-journal.org"))
  '(package-selected-packages
-   '(golden-ratio org-fancy-priorities auctex org-bullets lua-mode anki-editor openwith pdf-tools orderless vertico writegood-mode wrap-region wc-mode use-package tablist rainbow-mode rainbow-delimiters palimpsest org-wc org-roam-ui org-ref org-pomodoro org-make-toc org-journal org-contrib org-appear multiple-cursors move-text modus-themes magit key-chord free-keys format-all expand-region engine-mode elfeed-org deft backup-each-save)))
+   '(ox-mediawiki golden-ratio org-fancy-priorities auctex org-bullets lua-mode anki-editor openwith pdf-tools orderless vertico writegood-mode wrap-region wc-mode use-package tablist rainbow-mode rainbow-delimiters palimpsest org-wc org-roam-ui org-ref org-pomodoro org-make-toc org-journal org-contrib org-appear multiple-cursors move-text modus-themes magit key-chord free-keys format-all expand-region engine-mode elfeed-org deft backup-each-save)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

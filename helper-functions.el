@@ -142,4 +142,15 @@
                       (region-beginning)
                       (region-end)))
 
+(defun my-publish-mediawiki ()
+  "Convert all .org files in the current directory to MediaWiki format using Pandoc, then move them to a predefined folder."
+  (interactive)
+  (let ((output-dir "/home/ilmari/my-files/websites/phonography/pages/mediawiki/"))
+    (dolist (file (directory-files "." t "\\.org$"))
+      (let ((output-file (concat output-dir (file-name-base file) ".wiki")))
+        (shell-command (concat "pandoc -f org -t mediawiki -o " 
+                               (shell-quote-argument output-file) " " 
+                               (shell-quote-argument file)))
+        (message "Converted and moved: %s" output-file)))))
+
 
