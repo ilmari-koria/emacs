@@ -389,6 +389,7 @@
                               ("tc" "scheduled-todo-full" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %?\nSCHEDULED: %^t DEADLINE: %^t\n")
                               ("td" "scheduled-deadline-only" entry (file+headline "~~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %?\nDEADLINE: %^t\n")
                               ("tl" "fleeting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tw" "wiki" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} :WIKI:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t) 
                               ("tf" "quick-clock-in-immediate" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
                               ("tk" "tinker" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO TINKER %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
                               ("tn" "quick-no-clock-in-immediate" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
@@ -614,8 +615,12 @@
   (setq org-static-blog-preview-start "")
   (setq org-static-blog-preview-end "")
   (setq org-static-blog-index-front-matter "<div id=\"front-page-container\">
-                                            <div id=\"welcome\"><h2>About</h2>
-                                            <p>Hello! My name is Ilmari. This blog is simply for me to share my interests in software, sound and zen.</p> <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a>.</p></div>
+                                            <div id=\"welcome\">
+                                            <h2>About</h2>
+                                            <p>Hello! My name is Ilmari. This blog is simply for me to share my interests in software, sound and zen.</p>
+                                            <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a>.</p>
+                                            <p id=\"about-disclaimer\">Apart from <a href=\"https://uk.linkedin.com/in/ilmari-koria-3151a5291\">LinkedIn</a> and <a href=\"https://www.youtube.com/channel/UCIwGuCqBXzXGozj0YeAcOTA\">YouTube</a>, I do not have (or use) any other social media accounts.</p>
+                                            </div>
                                             <div id=\"profile-pic\"><figure><img src=\"./static/profile.png\" alt=\"Selfie of a Nordic caucasian man with short curly brown hair.\"><figcaption>‘Me / 2023.’</figcaption></figure></div>
                                             </div>
                                             <h2>Recent posts</h2>")
@@ -633,13 +638,12 @@
                 <li><a href=\"https://ilmarikoria.xyz/rss.xml\">RSS</a></li>
                 <li><a href=\"https://git.ilmarikoria.xyz/\">Git</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/ilmari-koria-resume.pdf\">Résumé</a></li>
-                <li><a href=\"https://ilmarikoria.xyz/podcast.html\">Podcast Editing Service</a></li>
                 <li><a href=\"https://nextcloud.ilmarikoria.xyz/\">Nextcloud</a></li>
                 <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
                 <li><a href=\"https://phonography.wiki/\">Phonography Wiki</a></li>
             </ul>")
   (setq org-static-blog-page-postamble
-        (format "<p id=\"metadata-stamp\">This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ Hosted on a <a href=\"https://www.debian.org\">GNU/Linux Debian</a> server ❘ <a href=\"https://ilmarikoria.xyz/static/ilmari-pub.asc\">PGP Key</a> ❘ Support this site? <code id=\"bitcoin-donation\">Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: </code><code id=\"bitcoin-address\">bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></p>
+        (format "<p id=\"metadata-stamp\">This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ <a href=\"https://ilmarikoria.xyz/static/ilmari-pub.asc\">PGP Key</a> ❘ Support this site? <code id=\"bitcoin-donation\">Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: </code><code id=\"bitcoin-address\">bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></p>
                  <p id=\"bottom-links\"><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a> ❘ <a href=\"#top\">Top</p>"
                 (format-time-string "%b %e, %Y")
                 emacs-version
