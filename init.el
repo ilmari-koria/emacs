@@ -126,6 +126,31 @@
 
 
 ;; -------------------------------------------------- ;;
+;; REPEAT                                             ;;
+;; -------------------------------------------------- ;;
+;; (describe-repeat-maps)
+;; see more maps "https://www.reddit.com/r/emacs/comments/1adwnse/repeatmode_is_awesome_share_you_useful_configs/"
+(use-package repeat
+  :config
+  (setq repeat-on-final-keystroke t)
+  (setq set-mark-command-repeat-pop t)
+  (repeat-mode 1)
+
+  (defvar buffer-navigation-map
+    (let ((map (make-sparse-keymap)))
+      (define-key map (kbd "n") #'next-line)
+      (define-key map (kbd "p") #'previous-line)
+      (define-key map (kbd "f") #'forward-word)
+      (define-key map (kbd "b") #'backward-word)
+      (define-key map (kbd "d") #'scroll-up-command)
+      (define-key map (kbd "u") #'scroll-down-command)
+      map))
+
+  (dolist (cmd '(next-line previous-line forward-word backward-word scroll-up-command scroll-down-command))
+    (put cmd 'repeat-map 'buffer-navigation-map)))
+
+
+;; -------------------------------------------------- ;;
 ;; COMPLETION                                         ;;
 ;; -------------------------------------------------- ;;
 
@@ -614,15 +639,11 @@
   (setq org-static-blog-use-preview t)
   (setq org-static-blog-preview-start "")
   (setq org-static-blog-preview-end "")
-  (setq org-static-blog-index-front-matter "<div id=\"front-page-container\">
-                                            <div id=\"welcome\">
+  (setq org-static-blog-index-front-matter "
                                             <h2>About</h2>
                                             <p>Hello! My name is Ilmari. This blog is simply for me to share my interests in software, sound and zen.</p>
                                             <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a>.</p>
-                                            <p id=\"about-disclaimer\">Apart from <a href=\"https://uk.linkedin.com/in/ilmari-koria-3151a5291\">LinkedIn</a> and <a href=\"https://www.youtube.com/channel/UCIwGuCqBXzXGozj0YeAcOTA\">YouTube</a>, I do not have (or use) any other social media accounts.</p>
-                                            </div>
-                                            <div id=\"profile-pic\"><figure><img src=\"./static/profile.png\" alt=\"Selfie of a Nordic caucasian man with short curly brown hair.\"><figcaption>‘Me / 2023.’</figcaption></figure></div>
-                                            </div>
+                                            <p>🔹 Apart from <a href=\"https://uk.linkedin.com/in/ilmari-koria-3151a5291\">LinkedIn</a> and <a href=\"https://www.youtube.com/channel/UCIwGuCqBXzXGozj0YeAcOTA\">YouTube</a>, I do not have (or use) any other social media accounts.</p>
                                             <h2>Recent posts</h2>")
   (setq org-static-blog-page-header "<meta name=\"author\" content=\"Ilmari Koria, ilmarikoria@posteo.net\">
                                      <meta name=\"referrer\" content=\"no-referrer\">
@@ -636,6 +657,7 @@
                 <li><a href=\"https://ilmarikoria.xyz\">Home</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/posts.html\">Posts</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/rss.xml\">RSS</a></li>
+                <li><a href=\"https://ilmarikoria.xyz/static/gallery/index.html\">Gallery</a></li>
                 <li><a href=\"https://git.ilmarikoria.xyz/\">Git</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/ilmari-koria-resume.pdf\">Résumé</a></li>
                 <li><a href=\"https://nextcloud.ilmarikoria.xyz/\">Nextcloud</a></li>
@@ -643,8 +665,8 @@
                 <li><a href=\"https://phonography.wiki/\">Phonography Wiki</a></li>
             </ul>")
   (setq org-static-blog-page-postamble
-        (format "<p id=\"metadata-stamp\">This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ <a href=\"https://ilmarikoria.xyz/static/ilmari-pub.asc\">PGP Key</a> ❘ Support this site? <code id=\"bitcoin-donation\">Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: </code><code id=\"bitcoin-address\">bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></p>
-                 <p id=\"bottom-links\"><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a> ❘ <a href=\"#top\">Top</p>"
+        (format "<p>This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ <a href=\"https://ilmarikoria.xyz/static/ilmari-pub.asc\">PGP Key</a> ❘ Support this site? Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: <code>bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></p>
+                 <p><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a> ❘ <a href=\"#top\">Top</p>"
                 (format-time-string "%b %e, %Y")
                 emacs-version
                 (org-version)))) ;; -- org static blog ends here
