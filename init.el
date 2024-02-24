@@ -388,7 +388,7 @@
 		   (org-deadline-warning-days 0)
                    (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("GOAL")))
 		   (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
-		   (org-agenda-overriding-header "\nTODAY'S TASKS")))
+		   (org-agenda-overriding-header "\nTODAY'S TASKS --- MAX SIX TODOs")))
 	  (agenda ""
 		  ((org-agenda-start-on-weekday nil)
 		   (org-agenda-start-day "+1d")
@@ -634,7 +634,7 @@
   (setq org-static-blog-posts-directory "~/my-files/emacs/org/roam/blog/")
   (setq org-static-blog-drafts-directory "~/my-files/emacs/org/roam/blog-drafts-dummy/") ;; because org-static-blog-publish will publish drafts folder
   (setq org-static-blog-preview-date-first-p t)
-  (setq org-static-blog-enable-tags nil)
+  (setq org-static-blog-enable-tags t)
   (setq org-static-blog-preview-ellipsis "")
   (setq org-static-blog-use-preview t)
   (setq org-static-blog-preview-start "")
@@ -643,26 +643,25 @@
                                             <h2>About</h2>
                                             <p>Hello! My name is Ilmari. This blog is simply for me to share my interests in software, sound and zen.</p>
                                             <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a>.</p>
-                                            <p>🔹 Apart from <a href=\"https://uk.linkedin.com/in/ilmari-koria-3151a5291\">LinkedIn</a> and <a href=\"https://www.youtube.com/channel/UCIwGuCqBXzXGozj0YeAcOTA\">YouTube</a>, I do not have (or use) any other social media accounts.</p>
+                                            <p>Apart from <a href=\"https://uk.linkedin.com/in/ilmari-koria-3151a5291\">LinkedIn</a> and <a href=\"https://www.youtube.com/channel/UCIwGuCqBXzXGozj0YeAcOTA\">YouTube</a>, I do not have other social media accounts.</p>
                                             <h2>Recent posts</h2>")
   (setq org-static-blog-page-header "<meta name=\"author\" content=\"Ilmari Koria, ilmarikoria@posteo.net\">
                                      <meta name=\"referrer\" content=\"no-referrer\">
                                      <meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=1.0,user-scalable=no\" />
                                      <link href=\"static/style.css\" rel=\"stylesheet\" type=\"text/css\" />
-                                     <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏞</text></svg>\">
-                                     ")
+                                     <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏞</text></svg>\">")
   (setq org-static-blog-page-preamble
         "<h1>Ilmari's Webpage</h1>
              <ul>
                 <li><a href=\"https://ilmarikoria.xyz\">Home</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/posts.html\">Posts</a></li>
+                <li><a href=\"https://ilmarikoria.xyz/tags.html\">All Tags</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/rss.xml\">RSS</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/static/gallery/index.html\">Gallery</a></li>
                 <li><a href=\"https://git.ilmarikoria.xyz/\">Git</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/ilmari-koria-resume.pdf\">Résumé</a></li>
                 <li><a href=\"https://nextcloud.ilmarikoria.xyz/\">Nextcloud</a></li>
                 <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
-                <li><a href=\"https://phonography.wiki/\">Phonography Wiki</a></li>
             </ul>")
   (setq org-static-blog-page-postamble
         (format "<p>This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ <a href=\"https://ilmarikoria.xyz/static/ilmari-pub.asc\">PGP Key</a> ❘ Support this site? Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: <code>bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></p>
