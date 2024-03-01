@@ -63,9 +63,6 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
 
-;; alias
-(defalias 'yes-or-no-p 'y-or-n-p)
-
 ;; encoding
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -116,7 +113,6 @@
 (add-to-list 'load-path "~/my-files/emacs/init/")
 (load "./helper-functions.el")
 
-
 ;; recentf
 (recentf-mode t)
 (setq recentf-max-menu-items 10)
@@ -128,6 +124,7 @@
 ;; -------------------------------------------------- ;;
 ;; REPEAT                                             ;;
 ;; -------------------------------------------------- ;;
+
 ;; (describe-repeat-maps)
 ;; see more maps "https://www.reddit.com/r/emacs/comments/1adwnse/repeatmode_is_awesome_share_you_useful_configs/"
 (use-package repeat
@@ -311,7 +308,7 @@
 ;; -------------------------------------------------- ;;
 
 ;; agenda basic
-;; agenda files are handles by emacs
+;; agenda files are handled by emacs
 (setq org-agenda-start-on-weekday nil)
 (setq org-agenda-include-diary t)
 (setq org-agenda-window-setup 'only-window)
@@ -323,24 +320,30 @@
 (setq holiday-islamic-holidays nil)
 (setq diary-file "~/my-files/nextcloud/home-agenda/diary-google")
 
-;; tags
-(setq org-tag-alist '(("MEETING" . ?m) ("QA" . ?q) ("DEV" . ?d) ("MISC" . ?s) ("TRAINING" . ?t)))
-
-;; -- org speed commands
-(setq org-use-speed-commands t)
+;; tags (max 6)
+(setq org-tag-alist '(
+                      ("MUSIC" . ?m)
+                      ("ACADEMIC" . ?a)
+                      ("DEV" . ?d)
+                      ("HOME" . ?h)
+                      ("FAMILY" . ?f)
+                      ("WORK" . ?w)))
 
 ;; org priorities
+
 (setq org-enable-priority-commands t)
 (setq org-priority-start-cycle-with-default t)
 (setq org-highest-priority 1)
 (setq org-default-priority 3)
-(setq org-lowest-priority 6)
-(setq org-priority-faces '((?1 :foreground "#dc322f")
-                           (?2 :foreground "#b58900")
-                           (?3 :foreground "#6c71c4")
-                           (?4 :foreground "#268bd2")
-                           (?5 :foreground "#2aa198")
-                           (?6 :foreground "#859900")))
+(setq org-lowest-priority 7)
+(setq org-priority-faces '((?1 :foreground "#ff0000")
+                           (?2 :foreground "#ff4500")
+                           (?4 :foreground "#ffa500")
+                           (?3 :foreground "#ffd700")
+                           (?5 :foreground "#ffff00")
+                           (?6 :foreground "#adff2f")
+                           (?7 :foreground "#008000")))
+
 
 ;; fancy priorities
 (use-package org-fancy-priorities
@@ -913,11 +916,11 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(modus-vivendi))
  '(custom-safe-themes
-   '("2cc1b50120c0d608cc5064eb187bcc22c50390eb091fddfa920bf2639112adb6" "fc608d4c9f476ad1da7f07f7d19cc392ec0fb61f77f7236f2b6b42ae95801a62" "69f7e8101867cfac410e88140f8c51b4433b93680901bb0b52014144366a08c8" "21e3d55141186651571241c2ba3c665979d1e886f53b2e52411e9e96659132d4" "eb50f36ed5141c3f702f59baa1968494dc8e9bd22ed99d2aaa536c613c8782db" "4320a92406c5015e8cba1e581a88f058765f7400cf5d885a3aa9b7b9fc448fa7" default))
+   '("d8bcb88ef0a3259a38d6deba78e569c0750ebfede82ad3e6da16573419fef48c" "2cc1b50120c0d608cc5064eb187bcc22c50390eb091fddfa920bf2639112adb6" "fc608d4c9f476ad1da7f07f7d19cc392ec0fb61f77f7236f2b6b42ae95801a62" "69f7e8101867cfac410e88140f8c51b4433b93680901bb0b52014144366a08c8" "21e3d55141186651571241c2ba3c665979d1e886f53b2e52411e9e96659132d4" "eb50f36ed5141c3f702f59baa1968494dc8e9bd22ed99d2aaa536c613c8782db" "4320a92406c5015e8cba1e581a88f058765f7400cf5d885a3aa9b7b9fc448fa7" default))
  '(org-agenda-files
    '("/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org" "/home/ilmari/my-files/emacs/org/journal/2023-journal.org"))
  '(package-selected-packages
-   '(ox-mediawiki golden-ratio org-fancy-priorities auctex org-bullets lua-mode anki-editor openwith pdf-tools orderless vertico writegood-mode wrap-region wc-mode use-package tablist rainbow-mode rainbow-delimiters palimpsest org-wc org-roam-ui org-ref org-pomodoro org-make-toc org-journal org-contrib org-appear multiple-cursors move-text modus-themes magit key-chord free-keys format-all expand-region engine-mode elfeed-org deft backup-each-save)))
+   '(standard-themes ox-mediawiki golden-ratio org-fancy-priorities auctex org-bullets lua-mode anki-editor openwith pdf-tools orderless vertico writegood-mode wrap-region wc-mode use-package tablist rainbow-mode rainbow-delimiters palimpsest org-wc org-roam-ui org-ref org-pomodoro org-make-toc org-journal org-contrib org-appear multiple-cursors move-text modus-themes magit key-chord free-keys format-all expand-region engine-mode elfeed-org deft backup-each-save)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
