@@ -120,6 +120,12 @@
 (setq recentf-exclude '("/\\(\\(\\(COMMIT\\|NOTES\\|PULLREQ\\|MERGEREQ\\|TAG\\)_EDIT\\|MERGE_\\|\\)MSG\\|\\(BRANCH\\|EDIT\\)_DESCRIPTION\\)\\'" "bookmark"))
 (setq recentf-filename-handlers '(abbreviate-file-name))
 
+;; golden ration
+(use-package golden-ratio
+  :ensure t
+  :config
+  (require 'golden-ratio)
+  (golden-ratio-mode 1))
 
 ;; -------------------------------------------------- ;;
 ;; REPEAT                                             ;;
@@ -355,7 +361,8 @@
                                     (?3 . "#3")
                                     (?4 . "#4")
                                     (?5 . "#5")
-                                    (?6 . "#6"))))
+                                    (?6 . "#6")
+                                    (?7 . "#7"))))
 
 ;; linkmarks
 (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/linkmarks")
@@ -466,7 +473,6 @@
 (setq org-latex-tables-centered nil)
 (setq org-latex-toc-command "\\tableofcontents \\addtocontents{toc}{\\protect\\thispagestyle{empty}} \\newpage")
 (setq org-latex-pdf-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-;; (setq org-latex-pdf-process '("latexmk -pdflatex='pdflatex -interaction nonstopmode' -pdf -bibtex -f %f"))
 
 ;; org html
 (setq org-html-footnotes-section "<div id=\"footnotes\"><h2 class=\"footnotes\">%s </h2><div id=\"text-footnotes\">%s</div></div>")
@@ -537,6 +543,7 @@
   (add-hook 'after-init-hook 'org-roam-bibtex-mode))
 
 ;; org roam
+;; TODO consider cleaning this up; split configuration
 (use-package org-roam
   :ensure t
   :config
@@ -673,10 +680,6 @@
                 emacs-version
                 (org-version)))) ;; -- org static blog ends here
 
-;; org appear - TODO what is this??
-(use-package org-appear
-  :ensure t)
-
 ;; org structure templates
 (setq org-structure-template-alist
       '(("a" . "export ascii")
@@ -746,7 +749,59 @@
 (use-package multiple-cursors
   :ensure t)
 
-;; latex
+;; ediff
+(setq ediff-keep-variants nil)
+(setq ediff-make-buffers-readonly-at-startup nil)
+(setq ediff-merge-revisions-with-ancestor t)
+(setq ediff-show-clashes-only t)
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
+
+;; magit
+(use-package magit
+  :ensure t)
+
+(use-package format-all
+  :ensure t
+  :commands format-all-mode
+  :config
+ (add-hook 'format-all-mode-hook 'format-all-ensure-formatter))
+
+;; prog mode hooks
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'electric-indent-mode)
+(add-hook 'prog-mode-hook 'wrap-region-mode)
+(add-hook 'prog-mode-hook 'abbrev-mode)
+(add-hook 'prog-mode-hook 'rainbow-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'multiple-cursors-mode)
+(add-hook 'prog-mode-hook 'format-all-mode)
+
+;; html mode hook
+(add-hook 'html-mode-hook 'display-line-numbers-mode)
+(add-hook 'html-mode-hook 'electric-indent-mode)
+(add-hook 'html-mode-hook 'wrap-region-mode)
+(add-hook 'html-mode-hook 'abbrev-mode)
+(add-hook 'html-mode-hook 'rainbow-mode)
+(add-hook 'html-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'html-mode-hook 'multiple-cursors-mode)
+(add-hook 'html-mode-hook 'format-all-mode)
+
+;; nxml mode hook
+(add-hook 'nxml-mode-hook 'display-line-numbers-mode)
+(add-hook 'nxml-mode-hook 'electric-indent-mode)
+(add-hook 'nxml-mode-hook 'wrap-region-mode)
+(add-hook 'nxml-mode-hook 'abbrev-mode)
+(add-hook 'nxml-mode-hook 'rainbow-mode)
+(add-hook 'nxml-mode-hook 'rainbow-delimiters-mode)
+(add-hook 'nxml-mode-hook 'multiple-cursors-mode)
+(add-hook 'nxml-mode-hook 'format-all-mode)
+
+
+;; -------------------------------------------------- ;;
+;; LaTeX                                              ;;
+;; -------------------------------------------------- ;;
+
 (use-package auctex
   :ensure t
   :config
@@ -766,47 +821,6 @@
 (add-hook 'latex-mode-hook 'turn-on-reftex)
 (add-hook 'latex-mode-hook 'hl-line-mode)
 (add-hook 'latex-mode-hook 'multiple-cursors-mode)
-
-;; control lock
-(require 'control-lock)
-(control-lock-keys)
-
-;; ediff
-(setq ediff-keep-variants nil)
-(setq ediff-make-buffers-readonly-at-startup nil)
-(setq ediff-merge-revisions-with-ancestor t)
-(setq ediff-show-clashes-only t)
-(setq ediff-split-window-function 'split-window-horizontally)
-(setq ediff-window-setup-function 'ediff-setup-windows-plain)
-
-;; magit
-(use-package magit
-  :ensure t)
-
-;; golden ration
-(use-package golden-ratio
-  :ensure t
-  :config
-  (require 'golden-ratio)
-  (golden-ratio-mode 1))
-
-;; prog mode hooks
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(add-hook 'prog-mode-hook 'electric-indent-mode)
-(add-hook 'prog-mode-hook 'wrap-region-mode)
-(add-hook 'prog-mode-hook 'abbrev-mode)
-(add-hook 'prog-mode-hook 'rainbow-mode)
-(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'prog-mode-hook 'multiple-cursors-mode)
-
-;; html mode hook
-(add-hook 'html-mode-hook 'display-line-numbers-mode)
-(add-hook 'html-mode-hook 'electric-indent-mode)
-(add-hook 'html-mode-hook 'wrap-region-mode)
-(add-hook 'html-mode-hook 'abbrev-mode)
-(add-hook 'html-mode-hook 'rainbow-mode)
-(add-hook 'html-mode-hook 'rainbow-delimiters-mode)
-(add-hook 'html-mode-hook 'multiple-cursors-mode)
 
 
 ;; -------------------------------------------------- ;;
