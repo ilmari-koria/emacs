@@ -253,6 +253,9 @@
   :config
   (setq key-chord-two-keys-delay 0.5)
   (key-chord-define-global "jj" 'my-org-jump-nearest-heading)
+  (key-chord-define-global "cc" 'my-mark-and-run-my-anki-cloze)
+  (key-chord-define-global "ss" 'my-set-cloze-counter)
+  (key-chord-define-global "rr" 'my-reset-cloze-counter)
   (key-chord-mode 1))
 
 
@@ -369,6 +372,9 @@
 (require 'linkmarks)
 (setq linkmarks-file "~/my-files/emacs/org/linkmarks/linkmarks.org")
 
+;; timer
+(setq org-timer-default-timer "25")
+
 ;; agenda custom commands
 (setq org-agenda-custom-commands
       '(("A" "AGENDA"
@@ -424,7 +430,7 @@
                               ("tc" "scheduled-todo-full" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %?\nSCHEDULED: %^t DEADLINE: %^t\n")
                               ("td" "scheduled-deadline-only" entry (file+headline "~~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %?\nDEADLINE: %^t\n")
                               ("tl" "fleeting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tw" "wiki" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} :WIKI:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t) 
+                              ("tw" "wiki" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} :WIKI:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
                               ("tf" "quick-clock-in-immediate" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
                               ("tk" "tinker" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO TINKER %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
                               ("tn" "quick-no-clock-in-immediate" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
@@ -456,7 +462,7 @@
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
                               ("k" "anki")
-                              ("km" "anki-cloze-python" entry (file "~/my-files/anki/udemy/math-python.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: math-cloze\n:END:\n** expression\n%^{expression}\n*** Exercises\n")
+                              ("km" "rossModernMandarinChinese2023" entry (file "~/my-files/emacs/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** Entry\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
                               )) ;; capture ends here
 
 ;; org export misc
@@ -577,9 +583,9 @@
       (error "")))
   (org-roam-db-autosync-mode)
 
-(add-hook 'org-roam-mode-hook #'visual-line-mode)
-(add-hook 'org-roam-mode-hook #'org-indent-mode)
-) ;; org roam ends here
+  (add-hook 'org-roam-mode-hook #'visual-line-mode)
+  (add-hook 'org-roam-mode-hook #'org-indent-mode)
+  ) ;; org roam ends here
 
 ;; org hooks
 (add-hook 'org-mode-hook 'visual-line-mode)
@@ -765,7 +771,7 @@
   :ensure t
   :commands format-all-mode
   :config
- (add-hook 'format-all-mode-hook 'format-all-ensure-formatter))
+  (add-hook 'format-all-mode-hook 'format-all-ensure-formatter))
 
 ;; prog mode hooks
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
