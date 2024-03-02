@@ -46,7 +46,7 @@
          (content (buffer-substring start end)))
     (goto-char start)
     (delete-region start end)
-    (insert (format "{{c%d::%s}}" cloze-counter content))
+    (insert (format "{{c%d::%s}}" cloze-counter (format "%s" content))) ; Ensures content is treated as a string
     (setq cloze-counter (+ cloze-counter 1))))
 
 (defun my-reset-cloze-counter ()
@@ -59,7 +59,7 @@
     (my-reset-cloze-counter)))
 
 (defun my-set-cloze-counter (value)
-  (interactive "Set cloze-counter to: ")
+  (interactive "nSet cloze-counter to: ") ; Changed to "n" to ensure numeric input
   (setq cloze-counter value)
   (message "cloze-counter set to %d" value))
 
@@ -123,7 +123,7 @@
                      (goto-char (point-min))
                      (re-search-forward "#\\+my_export: pdf" nil t)))
           (org-latex-export-to-pdf)))))
-    (setq org-latex-pdf-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+  (setq org-latex-pdf-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
                                 "bibtex %b"
                                 "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
                                 "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))) ;; my-update-blog-pdf ends here
@@ -148,9 +148,7 @@
   (let ((output-dir "/home/ilmari/my-files/websites/phonography/pages/mediawiki/"))
     (dolist (file (directory-files "." t "\\.org$"))
       (let ((output-file (concat output-dir (file-name-base file) ".wiki")))
-        (shell-command (concat "pandoc -f org -t mediawiki -o " 
-                               (shell-quote-argument output-file) " " 
+        (shell-command (concat "pandoc -f org -t mediawiki -o "
+                               (shell-quote-argument output-file) " "
                                (shell-quote-argument file)))
         (message "Converted and moved: %s" output-file)))))
-
-

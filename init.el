@@ -253,7 +253,7 @@
   :config
   (setq key-chord-two-keys-delay 0.5)
   (key-chord-define-global "jj" 'my-org-jump-nearest-heading)
-  (key-chord-define-global "cc" 'my-mark-and-run-my-anki-cloze)
+  (key-chord-define-global "zz" 'my-mark-and-run-my-anki-cloze)
   (key-chord-define-global "ss" 'my-set-cloze-counter)
   (key-chord-define-global "rr" 'my-reset-cloze-counter)
   (key-chord-mode 1))
@@ -462,7 +462,7 @@
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
                               ("k" "anki")
-                              ("km" "rossModernMandarinChinese2023" entry (file "~/my-files/emacs/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** Entry\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
+                              ("km" "rossModernMandarinChinese2023" entry (file "~/my-files/emacs/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
                               )) ;; capture ends here
 
 ;; org export misc
