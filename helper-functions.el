@@ -49,6 +49,15 @@
     (insert (format "{{c%d::%s}}" cloze-counter (format "%s" content))) ; Ensures content is treated as a string
     (setq cloze-counter (+ cloze-counter 1))))
 
+(defun my-anki-cloze-but-dont-increase-counter ()
+  (interactive)
+  (let* ((start (region-beginning))
+         (end (region-end))
+         (content (buffer-substring start end)))
+    (goto-char start)
+    (delete-region start end)
+    (insert (format "{{c%d::%s}}" cloze-counter (format "%s" content)))))
+
 (defun my-reset-cloze-counter ()
   (interactive)
   (setq cloze-counter 1)
@@ -73,6 +82,18 @@
           (goto-char end)
           (activate-mark)
           (my-anki-cloze))
+      (message "No word at point"))))
+
+(defun my-mark-and-run-my-anki-cloze-but-dont-increase-counter ()
+  (interactive)
+  (let ((beg (car (bounds-of-thing-at-point 'word)))
+        (end (cdr (bounds-of-thing-at-point 'word))))
+    (if (and beg end)
+        (progn
+          (set-mark beg)
+          (goto-char end)
+          (activate-mark)
+          (my-anki-cloze-but-dont-increase-counter))
       (message "No word at point"))))
 
 (defun my-start-pomodoro ()

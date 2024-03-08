@@ -172,21 +172,6 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
-;; -------------------------------------------------- ;;
-;; PDF                                                ;;
-;; -------------------------------------------------- ;;
-
-(use-package pdf-tools
-  :ensure t
-  :mode (("\\.pdf\\'" . pdf-view-mode))
-  :config
-  (pdf-tools-install)
-  (pdf-loader-install)
-  (setq pdf-view-use-scaling)
-  (setq pdf-view-use-imagemagick nil)
-  (setq revert-without-query '(".pdf"))
-  (add-hook 'pdf-view-mode-hook (lambda () (pdf-view-themed-minor-mode))))
-
 
 ;; -------------------------------------------------- ;;
 ;; OPEN WITH                                          ;;
@@ -252,8 +237,9 @@
   :ensure t
   :config
   (setq key-chord-two-keys-delay 0.5)
-  (key-chord-define-global "jj" 'my-org-jump-nearest-heading)
-  (key-chord-define-global "zz" 'my-mark-and-run-my-anki-cloze)
+  (key-chord-define-global "jj" 'my-mark-and-run-my-anki-cloze)
+  (key-chord-define-global "oo" 'my-mark-and-run-my-anki-cloze)
+  (key-chord-define-global "ii" 'my-mark-and-run-my-anki-cloze-but-dont-increase-counter)
   (key-chord-define-global "ss" 'my-set-cloze-counter)
   (key-chord-define-global "rr" 'my-reset-cloze-counter)
   (key-chord-mode 1))
@@ -339,7 +325,6 @@
                       ("WORK" . ?w)))
 
 ;; org priorities
-
 (setq org-enable-priority-commands t)
 (setq org-priority-start-cycle-with-default t)
 (setq org-highest-priority 1)
@@ -366,11 +351,6 @@
                                     (?5 . "#5")
                                     (?6 . "#6")
                                     (?7 . "#7"))))
-
-;; linkmarks
-(add-to-list 'load-path "~/my-files/emacs/init/my-elisp/linkmarks")
-(require 'linkmarks)
-(setq linkmarks-file "~/my-files/emacs/org/linkmarks/linkmarks.org")
 
 ;; timer
 (setq org-timer-default-timer "25")
@@ -465,6 +445,8 @@
                               ("km" "rossModernMandarinChinese2023" entry (file "~/my-files/emacs/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
                               )) ;; capture ends here
 
+(add-hook 'org-capture-after-finalize-hook 'my-reset-cloze-counter)
+
 ;; org export misc
 (setq org-export-with-smart-quotes t)
 (setq org-export-preserve-breaks t)
@@ -527,7 +509,7 @@
   (setq org-ref-activate-cite-links t)
   (setq org-ref-cite-insert-version 2)
   (setq org-ref-show-broken-links nil)
-  (setq bibtex-completion-bibliography '("/home/ilmari/my-files/zotero/bibliography.bib"))
+                                        ; (setq bibtex-completion-bibliography '("/home/ilmari/my-files/zotero/bibliography.bib"))
   (setq bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n")
   (setq bibtex-completion-additional-search-fields '(keywords))
   (setq bibtex-completion-display-formats
@@ -767,6 +749,7 @@
 (use-package magit
   :ensure t)
 
+;; format all
 (use-package format-all
   :ensure t
   :commands format-all-mode
@@ -807,11 +790,6 @@
 ;; -------------------------------------------------- ;;
 ;; LaTeX                                              ;;
 ;; -------------------------------------------------- ;;
-
-(use-package auctex
-  :ensure t
-  :config
-  (load "auctex.el" nil t t))
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
@@ -922,29 +900,30 @@
 (global-set-key (kbd "C-: r") 'my-reset-cloze-counter)
 (global-set-key (kbd "C-: s") 'my-set-cloze-counter)
 (global-set-key (kbd "C-: m") 'my-mark-and-run-my-anki-cloze)
-(global-set-key (kbd "C-: p") 'python-anki)
+(global-set-key (kbd "C-: k") 'key-chord-mode)
 
+
+;; -------------------------------------------------- ;;
+;; SERVER                                             ;;
+;; -------------------------------------------------- ;;
+(server-start)
 
 ;; -------------------------------------------------- ;;
 ;; ADDED BY EMACS                                     ;;
 ;; -------------------------------------------------- ;;
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(modus-vivendi))
+ '(custom-enabled-themes '(modus-operandi))
  '(custom-safe-themes
-   '("d8bcb88ef0a3259a38d6deba78e569c0750ebfede82ad3e6da16573419fef48c" "2cc1b50120c0d608cc5064eb187bcc22c50390eb091fddfa920bf2639112adb6" "fc608d4c9f476ad1da7f07f7d19cc392ec0fb61f77f7236f2b6b42ae95801a62" "69f7e8101867cfac410e88140f8c51b4433b93680901bb0b52014144366a08c8" "21e3d55141186651571241c2ba3c665979d1e886f53b2e52411e9e96659132d4" "eb50f36ed5141c3f702f59baa1968494dc8e9bd22ed99d2aaa536c613c8782db" "4320a92406c5015e8cba1e581a88f058765f7400cf5d885a3aa9b7b9fc448fa7" default))
- '(org-agenda-files
-   '("/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org" "/home/ilmari/my-files/emacs/org/journal/2023-journal.org"))
+   '("aed3a896c4ea7cd7603f7a242fe2ab21f1539ab4934347e32b0070a83c9ece01" default))
  '(package-selected-packages
-   '(standard-themes ox-mediawiki golden-ratio org-fancy-priorities auctex org-bullets lua-mode anki-editor openwith pdf-tools orderless vertico writegood-mode wrap-region wc-mode use-package tablist rainbow-mode rainbow-delimiters palimpsest org-wc org-roam-ui org-ref org-pomodoro org-make-toc org-journal org-contrib org-appear multiple-cursors move-text modus-themes magit key-chord free-keys format-all expand-region engine-mode elfeed-org deft backup-each-save)))
+   '(modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(default ((t (:family "Noto Sans Mono" :foundry "GOOG" :slant normal :weight normal :height 143 :width normal))))
- '(hl-line ((t nil))))
+ )
