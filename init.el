@@ -305,7 +305,7 @@
 ;; agenda basic
 ;; agenda files are handled by emacs
 (setq org-agenda-start-on-weekday nil)
-(setq org-agenda-include-diary t)
+(setq org-agenda-include-diary nil)
 (setq org-agenda-window-setup 'only-window)
 (setq org-agenda-use-tag-inheritance nil)
 (setq org-tags-match-list-sublevels t)
@@ -488,6 +488,7 @@
 (setq org-image-actual-width '(200))
 (setq org-startup-indented t)
 (setq org-habit-following-days 1)
+(setq org-habit-graph-column 100)
 (setq org-attach-auto-tag "attach")
 (setq org-use-tag-inheritance nil)
 (setq org-outline-path-complete-in-steps nil)
@@ -919,8 +920,10 @@
  '(custom-enabled-themes '(modus-operandi))
  '(custom-safe-themes
    '("aed3a896c4ea7cd7603f7a242fe2ab21f1539ab4934347e32b0070a83c9ece01" default))
+ '(org-agenda-files
+   '("~/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(lua-mode anki-editor modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

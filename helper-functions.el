@@ -125,29 +125,7 @@
   (shell-command "bash check-and-delete-files")
   (find-file "~/my-files/emacs/org/roam/blog/")
   (org-static-blog-publish)
-  (my-update-blog-pdf)
   (shell-command "bash update-website"))
-
-(defun my-update-blog-pdf ()
-  "export all *.org files in wd to org LaTeX pdf if they have the line '#+my_export: pdf'."
-  (interactive)
-  (setq org-latex-pdf-process '("xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-                                "bibtex %b"
-                                "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-                                "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
-  (find-file "~/my-files/emacs/org/roam/blog/")
-  (let ((org-files (directory-files default-directory t "\\.org$")))
-    (dolist (file org-files)
-      (with-current-buffer (find-file-noselect file)
-        (when (and (string-match-p "\\.org$" file)
-                   (save-excursion
-                     (goto-char (point-min))
-                     (re-search-forward "#\\+my_export: pdf" nil t)))
-          (org-latex-export-to-pdf)))))
-  (setq org-latex-pdf-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-                                "bibtex %b"
-                                "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-                                "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))) ;; my-update-blog-pdf ends here
 
 (defun my-org-journal-find-location ()
   ;; helper function find journal location
