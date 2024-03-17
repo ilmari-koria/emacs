@@ -2,7 +2,6 @@
 ;; PACKAGES                                           ;;
 ;; -------------------------------------------------- ;;
 
-;; sources
 (require 'package)
 (add-to-list 'package-archives '("melpa"  . "https://melpa.org/packages/")     t)
 (add-to-list 'package-archives '("gnu"    . "https://elpa.gnu.org/packages/")  t)
@@ -357,7 +356,7 @@
 
 ;; agenda custom commands
 (setq org-agenda-custom-commands
-      '(("A" "AGENDA"
+      '(("a" "agenda"
    	 (
 	  (agenda ""
 		  ((org-agenda-time-grid nil)
@@ -370,21 +369,12 @@
 		   (org-agenda-entry-types '(:deadline))
 		   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
 		   (org-agenda-overriding-header "\nUPCOMING DEADLINES (+14d)")))
-          (todo "GOAL"
-                ((org-agenda-overriding-header "\nGOALS")
-                 (org-agenda-block-separator nil)
-		 (org-tags-match-list-sublevels t)))
-          (todo "REMINDER"
-                ((org-agenda-overriding-header "\nREMINDERS")
-                 (org-agenda-block-separator nil)
-		 (org-tags-match-list-sublevels t)))
           (agenda ""
 		  ((org-agenda-block-separator nil)
 		   (org-agenda-span 1)
 		   (org-deadline-warning-days 0)
-                   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo '("GOAL")))
 		   (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
-		   (org-agenda-overriding-header "\nTODAY'S TASKS --- MAX SIX TODOs")))
+		   (org-agenda-overriding-header "\ntoday's tasks --- max six todos --- be as specific as possible")))
 	  (agenda ""
 		  ((org-agenda-start-on-weekday nil)
 		   (org-agenda-start-day "+1d")
@@ -393,10 +383,6 @@
 		   (org-agenda-block-separator nil)
 		   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
 		   (org-agenda-overriding-header "\nNEXT SEVEN DAYS")))
-          (todo "WAITING"
-		((org-agenda-overriding-header "PENDING TASKS")
-
-		 (org-tags-match-list-sublevels t)))
 	  (todo "*"
 		((org-agenda-overriding-header "UNSCHEDULED TASKS")
 		 (org-tags-match-list-sublevels t)
@@ -404,40 +390,15 @@
 
 ;; org capture templates
 (setq org-capture-templates '(
-                              ("t" "TODO")
-                              ("ta" "WAITING-unscheduled" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* WAITING %?\n")
-                              ("te" "reminder" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* REMINDER %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
-                              ("tc" "scheduled-todo-full" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %?\nSCHEDULED: %^t DEADLINE: %^t\n")
-                              ("td" "scheduled-deadline-only" entry (file+headline "~~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %?\nDEADLINE: %^t\n")
-                              ("tl" "fleeting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tw" "wiki" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} :WIKI:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tf" "quick-clock-in-immediate" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("tk" "tinker" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO TINKER %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("tn" "quick-no-clock-in-immediate" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tq" "TODO-quick" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>")
-                              ;; ("tr" "rss todo" entry (file+olp "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %^{Description} %^g:RSS:\nSCHEDULED: %^t\n\n %a\n\n %i")
-                              ("tt" "scheduled-todo" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %?\nSCHEDULED: %^t\n")
-                              ("tm" "messages" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO Email and messages :MESSAGES:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("ti" "misc" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO Admin and misc tasks :MISC:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
+                              ("t" "todo")
+                              ("ts" "scheduled" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %?\nSCHEDULED: %^t DEADLINE: %^t\n")
+                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* WAITING %?\n")
+                              ("tr" "reminder" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* REMINDER %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
+                              ("tf" "fleeting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
+                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
                               ("tr" "repeat" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "REPEAT-TASKS") "\n* REPEAT %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
-
-                              ("o" "TODO Pomodoro")
-                              ("of" "quick-clock-in-immediate" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :pomodoro t :immediate-finish t)
-                              ("oa" "anki" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO Anki :ANKI:\nSCHEDULED: <%<%Y-%m-%d %a>>" :pomodoro t :immediate-finish t)
-                              ("ok" "tinker" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO tinker %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :pomodoro t :immediate-finish t)
-                              ("om" "messages" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO Email and messages :MESSAGES:\nSCHEDULED: <%<%Y-%m-%d %a>>" :pomodoro t :immediate-finish t)
-                              ("oi" "misc" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO Admin and misc tasks :MISC:\nSCHEDULED: <%<%Y-%m-%d %a>>" :pomodoro t :immediate-finish t)
-                              ("or" "reaper" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO reaper :DRONE:\nSCHEDULED: <%<%Y-%m-%d %a>>" :pomodoro t :immediate-finish t)
-                              ("ow" "relax" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO relax :MISC:\nSCHEDULED: <%<%Y-%m-%d %a>>" :pomodoro t :immediate-finish t)
-
-                              ("a" "ad-hoc")
-                              ("ac" "quick-task-or-notes" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* DONE  %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-resume t)
-                              ("ae" "quick-meeting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* DONE %^{Description} :MEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-resume t)
-                              ("ab" "comfort-break" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* DONE Comfort Break :BREAK:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-resume t)
-                              ("ad" "get-drink" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* DONE Get Drink :BREAK:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-resume t)
-                              ("am" "messages" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* DONE Email and messages :MESSAGES:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-resume t)
-                              ("at" "tinker" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* DONE Tinkering :DEV:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-resume t)
-                              ("ai" "misc" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* DONE Admin and misc tasks :MISC:\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-resume t)
 
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
