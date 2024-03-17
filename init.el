@@ -510,7 +510,7 @@
   (setq org-ref-activate-cite-links t)
   (setq org-ref-cite-insert-version 2)
   (setq org-ref-show-broken-links nil)
-                                        ; (setq bibtex-completion-bibliography '("/home/ilmari/my-files/zotero/bibliography.bib"))
+  (setq bibtex-completion-bibliography '("/home/ilmari/my-files/zotero/bibliography.bib"))
   (setq bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n")
   (setq bibtex-completion-additional-search-fields '(keywords))
   (setq bibtex-completion-display-formats
@@ -642,7 +642,7 @@
                                             <h2>About</h2>
                                             <p>Hello! My name is Ilmari. This blog is simply for me to share my interests in software, sound and zen.</p>
                                             <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a>.</p>
-                                            <p>Apart from <a href=\"https://uk.linkedin.com/in/ilmari-koria-3151a5291\">LinkedIn</a> and <a href=\"https://www.youtube.com/channel/UCIwGuCqBXzXGozj0YeAcOTA\">YouTube</a>, I do not have other social media accounts.</p>
+                                            <p>I also have accounts on <a href=\"https://uk.linkedin.com/in/ilmari-koria-3151a5291\">LinkedIn</a> and <a href=\"https://www.youtube.com/channel/UCIwGuCqBXzXGozj0YeAcOTA\">YouTube</a>, but I am only semi-active on these.</p>
                                             <h2>Recent posts</h2>")
   (setq org-static-blog-page-header "<meta name=\"author\" content=\"Ilmari Koria, ilmarikoria@posteo.net\">
                                      <meta name=\"referrer\" content=\"no-referrer\">
