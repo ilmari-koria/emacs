@@ -328,14 +328,13 @@
 (setq org-priority-start-cycle-with-default t)
 (setq org-highest-priority 1)
 (setq org-default-priority 3)
-(setq org-lowest-priority 7)
+(setq org-lowest-priority 6)
 (setq org-priority-faces '((?1 :foreground "#ff0000")
                            (?2 :foreground "#ff4500")
                            (?4 :foreground "#ffa500")
                            (?3 :foreground "#ffd700")
                            (?5 :foreground "#ffff00")
-                           (?6 :foreground "#adff2f")
-                           (?7 :foreground "#008000")))
+                           (?6 :foreground "#adff2f")))
 
 
 ;; fancy priorities
@@ -348,8 +347,7 @@
                                     (?3 . "#3")
                                     (?4 . "#4")
                                     (?5 . "#5")
-                                    (?6 . "#6")
-                                    (?7 . "#7"))))
+                                    (?6 . "#6"))))
 
 ;; timer
 (setq org-timer-default-timer "25")
@@ -391,14 +389,14 @@
 ;; org capture templates
 (setq org-capture-templates '(
                               ("t" "todo")
-                              ("ts" "scheduled" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO %?\nSCHEDULED: %^t DEADLINE: %^t\n")
-                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* WAITING %?\n")
-                              ("tr" "reminder" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* REMINDER %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
-                              ("tf" "fleeting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "\n* TODO %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
-                              ("tr" "repeat" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "REPEAT-TASKS") "\n* REPEAT %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
+                              ("ts" "scheduled" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %?\nSCHEDULED: %^t DEADLINE: %^t\n")
+                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* [#3] WAITING %?\n")
+                              ("tr" "reminder" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* REMINDER [#3] %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
+                              ("tf" "fleeting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
+                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
+                              ("tr" "repeat" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "REPEAT-TASKS") "* REPEAT [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
 
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
@@ -878,9 +876,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(modus-operandi))
+ '(custom-enabled-themes '(modus-vivendi))
  '(custom-safe-themes
-   '("aed3a896c4ea7cd7603f7a242fe2ab21f1539ab4934347e32b0070a83c9ece01" default))
+   '("a242356ae1aebe9f633974c0c29b10f3e00ec2bc96a61ff2cdad5ffa4264996d" "aed3a896c4ea7cd7603f7a242fe2ab21f1539ab4934347e32b0070a83c9ece01" default))
  '(org-agenda-files
    '("~/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
