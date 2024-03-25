@@ -766,6 +766,17 @@
 (add-hook 'latex-mode-hook 'hl-line-mode)
 (add-hook 'latex-mode-hook 'multiple-cursors-mode)
 
+;; -------------------------------------------------- ;;
+;; DENOTE                                             ;;
+;; -------------------------------------------------- ;;
+(use-package denote
+  :ensure t
+  :config
+  (setq denote-directory "~/my-files/cbeta/notes/")
+  (require 'denote-silo-extras)
+  (setq denote-silo-extras-directories '("~/my-files/cbeta/notes/"
+                                         "~/my-files/c7767/notes/")))
+
 
 ;; -------------------------------------------------- ;;
 ;; STYLING                                            ;;
@@ -815,7 +826,7 @@
 (global-set-key (kbd "C-= k") 'clone-indirect-buffer)
 (global-set-key (kbd "C-= l") 'flyspell-popup-correct)
 (global-set-key (kbd "C-= m") 'overwrite-mode)
-(global-set-key (kbd "C-= n") 'my-org-capture-at-point)
+(global-set-key (kbd "C-= n") 'denote-silo-extras-create-note)
 (global-set-key (kbd "C-= o") 'org-narrow-to-subtree)
 (global-set-key (kbd "C-= p") 'org-pomodoro)
 (global-set-key (kbd "C-= q") 'my-surround-region-with-actual-quotes)
@@ -879,10 +890,12 @@
  '(custom-enabled-themes '(modus-vivendi))
  '(custom-safe-themes
    '("a242356ae1aebe9f633974c0c29b10f3e00ec2bc96a61ff2cdad5ffa4264996d" "aed3a896c4ea7cd7603f7a242fe2ab21f1539ab4934347e32b0070a83c9ece01" default))
+ '(denote-silo-extras-directories
+   '("/home/ilmari/my-files/cbeta/notes/" "/home/ilmari/my-files/c7767/notes/"))
  '(org-agenda-files
-   '("~/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org"))
+   '("~/my-files/nextcloud/cbeta-agenda/cbeta-agenda.org" "/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(lua-mode anki-editor modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
