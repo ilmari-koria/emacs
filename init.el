@@ -171,6 +171,9 @@
   (completion-styles '(orderless basic))
   (completion-category-overrides '((file (styles basic partial-completion)))))
 
+(use-package marginalia
+  :ensure t)
+
 
 ;; -------------------------------------------------- ;;
 ;; OPEN WITH                                          ;;
@@ -779,6 +782,30 @@
 
 
 ;; -------------------------------------------------- ;;
+;; CITAR                                              ;;
+;; -------------------------------------------------- ;;
+
+(use-package org-cite
+  :config
+  (org-cite-global-bibliography
+   '("~/my-files/zotero/bibliography.bib")))
+
+(use-package citar
+  :ensure t
+  :custom
+  (org-cite-insert-processor 'citar)
+  (org-cite-follow-processor 'citar)
+  (org-cite-activate-processor 'citar)
+  (citar-bibliography "~/my-files/zotero/bibliography.bib"))
+
+(use-package citar-denote
+  :ensure t
+  :config
+  (citar-denote-mode)
+  :custom
+  (citar-open-always-create-notes t))
+
+;; -------------------------------------------------- ;;
 ;; STYLING                                            ;;
 ;; -------------------------------------------------- ;;
 (setq-default line-spacing 0.3)
@@ -895,7 +922,7 @@
  '(org-agenda-files
    '("~/my-files/nextcloud/cbeta-agenda/cbeta-agenda.org" "/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(marginalia org-cite citar-denote denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
