@@ -126,6 +126,42 @@
   (require 'golden-ratio)
   (golden-ratio-mode 1))
 
+
+;; -------------------------------------------------- ;;
+;; BIBTEX                                             ;;
+;; -------------------------------------------------- ;;
+
+(setq bibtex-autokey-edit-before-use nil)
+(setq bibtex-autokey-titleword-separator "")
+(setq bibtex-autokey-year-length 4)
+(setq bibtex-autokey-year-title-separator "")
+(setq bibtex-autokey-titleword-length 12)
+
+;; emacs bibtex doesn't provide a convenient way to order entries in bibkey creation
+(eval-after-load "bibtex"
+  '(defun bibtex-generate-autokey ()
+     (let* ((names (bibtex-autokey-get-names))
+            (title (bibtex-autokey-get-title))
+            (year (bibtex-autokey-get-year))
+            (autokey (concat
+                      bibtex-autokey-prefix-string
+                      names
+                      (unless (or (equal names "")
+                                  (equal title ""))
+                        "")
+                      title
+                      (unless (or (and (equal names "")
+                                       (equal title ""))
+                                  (equal year ""))
+                        bibtex-autokey-year-title-separator)
+                      year)))
+       (if bibtex-autokey-before-presentation-function
+           (funcall bibtex-autokey-before-presentation-function autokey)
+         autokey))))
+
+(add-hook 'bibtex-mode-hook 'format-all-mode)
+
+
 ;; -------------------------------------------------- ;;
 ;; REPEAT                                             ;;
 ;; -------------------------------------------------- ;;
@@ -772,13 +808,25 @@
 ;; -------------------------------------------------- ;;
 ;; DENOTE                                             ;;
 ;; -------------------------------------------------- ;;
+
+;; TODO read:
+;; - https://github.com/pprevos/citar-denote
+;; - https://lucidmanager.org/productivity/taking-notes-with-emacs-denote/
+;; - https://lucidmanager.org/productivity/using-emacs-image-dired/ ;; for the image file formatting
+;; - https://protesilaos.com/emacs/denote
+;; - https://lucidmanager.org/productivity/emacs-bibtex-mode/
+;; - https://github.com/emacs-citar/citar
+
 (use-package denote
   :ensure t
   :config
   (setq denote-directory "~/my-files/cbeta/notes/")
+  (denote-rename-buffer-mode t)
   (require 'denote-silo-extras)
   (setq denote-silo-extras-directories '("~/my-files/cbeta/notes/"
-                                         "~/my-files/c7767/notes/")))
+                                         "~/my-files/c7767/notes/"))
+  :hook
+  (dired-mode . denote-dired-mode))
 
 
 ;; -------------------------------------------------- ;;
