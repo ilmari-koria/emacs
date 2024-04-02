@@ -1,7 +1,3 @@
-;; TODO
-;; - migrate to denote file naming scheme
-;; - migrate to using citar
-
 ;; -------------------------------------------------- ;;
 ;; PACKAGES                                           ;;
 ;; -------------------------------------------------- ;;
@@ -19,6 +15,7 @@
   (package-install 'use-package))
 
 ;; org extras
+;; why is this here?
 (use-package org
   :ensure org-contrib
   :demand t)
@@ -33,10 +30,10 @@
 (setq sentence-end-double-space nil)
 (setq system-time-locale "C")
 (setq scroll-bar-mode nil)
-(setq warning-minimum-level :emergency)
+(setq warning-minimum-level :emergency) ;; check docs for this
 (setq large-file-warning-threshold nil)
 (setq word-wrap-by-category t)
-(setq initial-buffer-choice "~/my-files/emacs/org/scratch.org")
+(setq initial-buffer-choice "~/my-files/org/scratch.org")
 (setq next-line-add-newlines 1)
 (setq electric-pair-preserve-balance nil)
 
@@ -48,7 +45,7 @@
 (setq user-full-name "Ilmari Koria")
 (setq user-mail-address "ilmarikoria@posteo.net")
 
-;; tramp and server
+;; gpg, tramp and server
 (setq auth-sources '("~/.authinfo.gpg"))
 (setq tramp-verbose 1)
 (setq server-client-instructions nil)
@@ -132,41 +129,6 @@
 
 
 ;; -------------------------------------------------- ;;
-;; BIBTEX                                             ;;
-;; -------------------------------------------------- ;;
-
-(setq bibtex-autokey-edit-before-use nil)
-(setq bibtex-autokey-titleword-separator "")
-(setq bibtex-autokey-year-length 4)
-(setq bibtex-autokey-year-title-separator "")
-(setq bibtex-autokey-titleword-length 12)
-
-;; emacs bibtex doesn't provide a convenient way to order entries in bibkey creation
-(eval-after-load "bibtex"
-  '(defun bibtex-generate-autokey ()
-     (let* ((names (bibtex-autokey-get-names))
-            (title (bibtex-autokey-get-title))
-            (year (bibtex-autokey-get-year))
-            (autokey (concat
-                      bibtex-autokey-prefix-string
-                      names
-                      (unless (or (equal names "")
-                                  (equal title ""))
-                        "")
-                      title
-                      (unless (or (and (equal names "")
-                                       (equal title ""))
-                                  (equal year ""))
-                        bibtex-autokey-year-title-separator)
-                      year)))
-       (if bibtex-autokey-before-presentation-function
-           (funcall bibtex-autokey-before-presentation-function autokey)
-         autokey))))
-
-(add-hook 'bibtex-mode-hook 'format-all-mode)
-
-
-;; -------------------------------------------------- ;;
 ;; REPEAT                                             ;;
 ;; -------------------------------------------------- ;;
 
@@ -213,7 +175,6 @@
 
 (use-package marginalia
   :ensure t)
-
 
 ;; -------------------------------------------------- ;;
 ;; OPEN WITH                                          ;;
@@ -309,7 +270,7 @@
   :config
   (require 'elfeed-org)
   (elfeed-org)
-  (setq rmh-elfeed-org-files (list "~/my-files/emacs/org/rss/rss-feed.org")))
+  (setq rmh-elfeed-org-files (list "~/my-files/org/rss/rss-feed.org")))
 
 
 ;; -------------------------------------------------- ;;
@@ -345,7 +306,6 @@
 ;; -------------------------------------------------- ;;
 
 ;; agenda basic
-;; agenda files are handled by emacs
 (setq org-agenda-start-on-weekday nil)
 (setq org-agenda-include-diary nil)
 (setq org-agenda-window-setup 'only-window)
@@ -444,9 +404,10 @@
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
                               ("k" "anki")
-                              ("km" "rossModernMandarinChinese2023" entry (file "~/my-files/emacs/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
-                              )) ;; capture ends here
+                              ("km" "rossModernMandarinChinese2023" entry (file "~/my-files/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
+                              )) ;; org capture ends here
 
+;; anki reset cloze hook after capture
 (add-hook 'org-capture-after-finalize-hook 'my-reset-cloze-counter)
 
 ;; org export misc
@@ -498,7 +459,7 @@
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 
 ;; org archive
-(setq org-archive-location "~/my-files/emacs/org/archive/org-archive.org::datetree/")
+(setq org-archive-location "~/my-files/org/archive/org-archive.org::datetree/")
 (setq org-archive-mark-done t)
 (setq org-archive-subtree-save-file-p t)
 
@@ -512,7 +473,7 @@
   (setq org-ref-activate-cite-links t)
   (setq org-ref-cite-insert-version 2)
   (setq org-ref-show-broken-links nil)
-  (setq bibtex-completion-bibliography '("/home/ilmari/my-files/zotero/bibliography.bib"))
+  (setq bibtex-completion-bibliography '("~/my-files/zotero/bibliography.bib"))
   (setq bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n")
   (setq bibtex-completion-additional-search-fields '(keywords))
   (setq bibtex-completion-display-formats
@@ -520,10 +481,7 @@
           (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
           (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
           (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}")))
-  (setq bibtex-completion-pdf-open-function
-        (lambda (fpath)
-          (call-process "open" nil 0 nil fpath))))
+          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
 
 ;; orb
 (use-package org-roam-bibtex
@@ -535,12 +493,11 @@
 
 
 ;; org roam
-;; TODO consider cleaning this up; split configuration
 (use-package org-roam
   :ensure t
   :config
   (setq org-roam-v2-ack t)
-  (setq org-roam-directory (file-truename "~/my-files/emacs/org/roam"))
+  (setq org-roam-directory (file-truename "~/my-files/org/roam"))
   (setq org-roam-completion-everywhere t)
   (setq org-roam-node-display-template (concat "${type:15} | " (propertize "${tags:40}" 'face 'org-tag)" | ${title:*}"))
   (setq org-roam-db-node-include-function
@@ -569,10 +526,8 @@
       (error "")))
 
   (org-roam-db-autosync-mode)
-
   (add-hook 'org-roam-mode-hook #'visual-line-mode)
-  (add-hook 'org-roam-mode-hook #'org-indent-mode)
-  ) ;; org roam ends here
+  (add-hook 'org-roam-mode-hook #'org-indent-mode)) ;; org roam ends here
 
 ;; org hooks
 (add-hook 'org-mode-hook 'visual-line-mode)
@@ -606,10 +561,6 @@
  '((python . t)
    (latex . t)))
 
-;; babel kmacro add python src
-(fset 'python-anki
-      (kmacro-lambda-form [?\C-c ?0 ?s ?p ?y ?t ?h ?o ?n ?  ?- ?n ?  ?: ?r ?e ?s ?u ?l ?t ?s ?  ?p backspace ?o ?u ?p backspace ?t ?p ?u ?t ?  ?: ?e ?x ?p ?o ?r ?t ?  ?b ?o ?t ?h] 0 "%d"))
-
 ;; org roam vis
 (use-package org-roam-ui
   :ensure t
@@ -623,7 +574,7 @@
 (use-package org-wc
   :ensure t
   :config
-  (setq org-wc-ignored-tags '("ARCHIVE")))
+  (setq org-wc-ignored-tags '("ARCHIVE" "archive" "noexport")))
 
 ;; website
 (use-package org-static-blog
@@ -634,8 +585,8 @@
   (setq org-static-blog-publish-url "https://ilmarikoria.xyz")
   (setq org-static-blog-archive-file "posts.html")
   (setq org-static-blog-publish-directory "~/my-files/websites/ilmarikoria/")
-  (setq org-static-blog-posts-directory "~/my-files/emacs/org/roam/blog/")
-  (setq org-static-blog-drafts-directory "~/my-files/emacs/org/roam/blog-drafts-dummy/") ;; because org-static-blog-publish will publish drafts folder
+  (setq org-static-blog-posts-directory "~/my-files/org/roam/blog/")
+  (setq org-static-blog-drafts-directory "~/my-files/org/roam/blog-drafts-dummy/") ;; because org-static-blog-publish will publish drafts folder
   (setq org-static-blog-preview-date-first-p t)
   (setq org-static-blog-enable-tags t)
   (setq org-static-blog-preview-ellipsis "")
@@ -696,9 +647,9 @@
 (use-package org-journal
   :ensure t
   :config
-  (setq org-journal-dir "~/my-files/emacs/org/journal/")
+  (setq org-journal-dir "~/my-files/org/journal/")
   (setq org-journal-date-format "%Y-%m-%d")
-  (setq org-journal-file-format "%Y-journal.org")
+  (setq org-journal-file-format "%<%Y%m%dT%H%M%S>--journal.org")
   (setq org-journal-enable-agenda-integration t)
   (setq org-journal-file-type 'yearly)
   (setq org-journal-file-header "#+title: %Y Journal\n#+filetags: log todo diary"))
@@ -864,6 +815,7 @@
 (global-set-key (kbd "C-= R") 'org-refile)
 (global-set-key (kbd "C-c 0") 'org-insert-structure-template)
 (global-set-key (kbd "C-c W") 'widen)
+
 (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
 
 (global-set-key (kbd "C-= a") 'org-agenda)
@@ -943,15 +895,7 @@
  '(custom-enabled-themes '(modus-vivendi))
  '(custom-safe-themes
    '("0f76f9e0af168197f4798aba5c5ef18e07c926f4e7676b95f2a13771355ce850" "a242356ae1aebe9f633974c0c29b10f3e00ec2bc96a61ff2cdad5ffa4264996d" "aed3a896c4ea7cd7603f7a242fe2ab21f1539ab4934347e32b0070a83c9ece01" default))
- '(denote-silo-extras-directories
-   '("/home/ilmari/my-files/cbeta/notes/" "/home/ilmari/my-files/c7767/notes/"))
  '(org-agenda-files
-   '("~/my-files/nextcloud/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org"))
+   '("~/my-files/nextcloud/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "~/my-files/nextcloud/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
    '(marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
