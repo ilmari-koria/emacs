@@ -1,3 +1,7 @@
+;; TODO
+;; - migrate to denote file naming scheme
+;; - migrate to using citar
+
 ;; -------------------------------------------------- ;;
 ;; PACKAGES                                           ;;
 ;; -------------------------------------------------- ;;
@@ -529,6 +533,7 @@
   (require 'org-ref)
   (add-hook 'after-init-hook 'org-roam-bibtex-mode))
 
+
 ;; org roam
 ;; TODO consider cleaning this up; split configuration
 (use-package org-roam
@@ -545,10 +550,10 @@
           (not (member "noexport" (org-get-tags)))
           (not (member "ignore" (org-get-tags)))
           (not (member "NOEXPORT" (org-get-tags)))))
-  (setq org-roam-capture-templates '(("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t :jump-to-captured t)
-                                     ("r" "reference" plain "%?" :target (file+head "reference/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :jump-to-captured t :unnarrowed t)
-                                     ("i" "index" plain "%?" :target (file+head "reference/index-${slug}.org" "#+title: ${title}") :jump-to-captured t :unnarrowed t)
-                                     ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :jump-to-captured t :unnarrowed t)))
+  (setq org-roam-capture-templates '(("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y%m%dT%H%M%S>--blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t :jump-to-captured t)
+                                     ("r" "reference" plain "%?" :target (file+head "reference/%<%Y%m%dT%H%M%S>--reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :jump-to-captured t :unnarrowed t)
+                                     ("i" "index" plain "%?" :target (file+head "reference/%<%Y%m%dT%H%M%S>--index-${slug}.org" "#+title: ${title}") :jump-to-captured t :unnarrowed t)
+                                     ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y%m%dT%H%M%S>--permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :jump-to-captured t :unnarrowed t)))
   (add-to-list 'display-buffer-alist
 	       '("\\*org-roam\\*"
                  (display-buffer-in-direction)
@@ -562,6 +567,7 @@
 			         (file-name-directory
                                   (file-relative-name (org-roam-node-file node) org-roam-directory))))
       (error "")))
+
   (org-roam-db-autosync-mode)
 
   (add-hook 'org-roam-mode-hook #'visual-line-mode)
@@ -820,38 +826,10 @@
 (use-package denote
   :ensure t
   :config
-  (setq denote-directory "~/my-files/cbeta/notes/")
   (denote-rename-buffer-mode t)
-  (require 'denote-silo-extras)
-  (setq denote-silo-extras-directories '("~/my-files/cbeta/notes/"
-                                         "~/my-files/c7767/notes/"))
   :hook
   (dired-mode . denote-dired-mode))
 
-
-;; -------------------------------------------------- ;;
-;; CITAR                                              ;;
-;; -------------------------------------------------- ;;
-
-(use-package org-cite
-  :config
-  (org-cite-global-bibliography
-   '("~/my-files/zotero/bibliography.bib")))
-
-(use-package citar
-  :ensure t
-  :custom
-  (org-cite-insert-processor 'citar)
-  (org-cite-follow-processor 'citar)
-  (org-cite-activate-processor 'citar)
-  (citar-bibliography "~/my-files/zotero/bibliography.bib"))
-
-(use-package citar-denote
-  :ensure t
-  :config
-  (citar-denote-mode)
-  :custom
-  (citar-open-always-create-notes t))
 
 ;; -------------------------------------------------- ;;
 ;; STYLING                                            ;;
@@ -964,13 +942,13 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(modus-vivendi))
  '(custom-safe-themes
-   '("a242356ae1aebe9f633974c0c29b10f3e00ec2bc96a61ff2cdad5ffa4264996d" "aed3a896c4ea7cd7603f7a242fe2ab21f1539ab4934347e32b0070a83c9ece01" default))
+   '("0f76f9e0af168197f4798aba5c5ef18e07c926f4e7676b95f2a13771355ce850" "a242356ae1aebe9f633974c0c29b10f3e00ec2bc96a61ff2cdad5ffa4264996d" "aed3a896c4ea7cd7603f7a242fe2ab21f1539ab4934347e32b0070a83c9ece01" default))
  '(denote-silo-extras-directories
    '("/home/ilmari/my-files/cbeta/notes/" "/home/ilmari/my-files/c7767/notes/"))
  '(org-agenda-files
-   '("~/my-files/nextcloud/cbeta-agenda/cbeta-agenda.org" "/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org"))
+   '("~/my-files/nextcloud/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "/home/ilmari/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "/home/ilmari/my-files/nextcloud/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(marginalia org-cite citar-denote denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
