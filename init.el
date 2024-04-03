@@ -15,7 +15,6 @@
   (package-install 'use-package))
 
 ;; org extras
-;; why is this here?
 (use-package org
   :ensure org-contrib
   :demand t)
@@ -46,7 +45,6 @@
 (setq user-mail-address "ilmarikoria@posteo.net")
 
 ;; gpg, tramp and server
-(setq auth-sources '("~/.authinfo.gpg"))
 (setq tramp-verbose 1)
 (setq server-client-instructions nil)
 
@@ -95,6 +93,10 @@
   (setq backup-each-save-remote-files nil)
   (add-hook 'after-save-hook 'backup-each-save))
 
+;; dired narrow
+(use-package dired-narrow
+  :ensure t)
+
 ;; modes
 (electric-pair-mode 1)
 (show-paren-mode 1)
@@ -127,6 +129,39 @@
   (require 'golden-ratio)
   (golden-ratio-mode 1))
 
+;; -------------------------------------------------- ;;
+;; BIBTEX                                             ;;
+;; -------------------------------------------------- ;;
+
+(setq bibtex-autokey-edit-before-use nil)
+(setq bibtex-autokey-titleword-separator "")
+(setq bibtex-autokey-year-length 4)
+(setq bibtex-autokey-year-title-separator "")
+(setq bibtex-autokey-titleword-length 12)
+
+;; emacs bibtex doesn't provide a convenient way to order entries in bibkey creation
+(eval-after-load "bibtex"
+  '(defun bibtex-generate-autokey ()
+     (let* ((names (bibtex-autokey-get-names))
+            (title (bibtex-autokey-get-title))
+            (year (bibtex-autokey-get-year))
+            (autokey (concat
+                      bibtex-autokey-prefix-string
+                      names
+                      (unless (or (equal names "")
+                                  (equal title ""))
+                        "")
+                      title
+                      (unless (or (and (equal names "")
+                                       (equal title ""))
+                                  (equal year ""))
+                        bibtex-autokey-year-title-separator)
+                      year)))
+       (if bibtex-autokey-before-presentation-function
+           (funcall bibtex-autokey-before-presentation-function autokey)
+         autokey))))
+
+(add-hook 'bibtex-mode-hook 'format-all-mode)
 
 ;; -------------------------------------------------- ;;
 ;; REPEAT                                             ;;
@@ -302,6 +337,14 @@
 
 
 ;; -------------------------------------------------- ;;
+;; ENCRYPTION                                         ;;
+;; -------------------------------------------------- ;;
+
+(require 'epa-file)
+(epa-file-enable)
+(setq auth-sources '("~/.authinfo.gpg"))
+
+;; -------------------------------------------------- ;;
 ;; ORG                                                ;;
 ;; -------------------------------------------------- ;;
 
@@ -435,6 +478,9 @@
 (use-package org-contrib
   :ensure t
   :config
+  (require 'oc-csl)
+  (require 'oc-biblatex)
+  (require 'oc-natbib)
   (require 'ox-extra)
   (require 'ox-latex)
   (require 'ox-bibtex)
@@ -465,69 +511,6 @@
 
 ;; org modules
 (require 'org-habit)
-
-;; org ref
-(use-package org-ref
-  :ensure t
-  :config
-  (setq org-ref-activate-cite-links t)
-  (setq org-ref-cite-insert-version 2)
-  (setq org-ref-show-broken-links nil)
-  (setq bibtex-completion-bibliography '("~/my-files/zotero/bibliography.bib"))
-  (setq bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n")
-  (setq bibtex-completion-additional-search-fields '(keywords))
-  (setq bibtex-completion-display-formats
-        '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
-          (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
-          (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
-          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}"))))
-
-;; orb
-(use-package org-roam-bibtex
-  :ensure t
-  :after org-roam
-  :config
-  (require 'org-ref)
-  (add-hook 'after-init-hook 'org-roam-bibtex-mode))
-
-
-;; org roam
-(use-package org-roam
-  :ensure t
-  :config
-  (setq org-roam-v2-ack t)
-  (setq org-roam-directory (file-truename "~/my-files/org/roam"))
-  (setq org-roam-completion-everywhere t)
-  (setq org-roam-node-display-template (concat "${type:15} | " (propertize "${tags:40}" 'face 'org-tag)" | ${title:*}"))
-  (setq org-roam-db-node-include-function
-        (lambda ()
-          (not (member "ATTACH" (org-get-tags)))
-          (not (member "attach" (org-get-tags)))
-          (not (member "noexport" (org-get-tags)))
-          (not (member "ignore" (org-get-tags)))
-          (not (member "NOEXPORT" (org-get-tags)))))
-  (setq org-roam-capture-templates '(("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y%m%dT%H%M%S>--blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t :jump-to-captured t)
-                                     ("r" "reference" plain "%?" :target (file+head "reference/%<%Y%m%dT%H%M%S>--reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :jump-to-captured t :unnarrowed t)
-                                     ("i" "index" plain "%?" :target (file+head "reference/%<%Y%m%dT%H%M%S>--index-${slug}.org" "#+title: ${title}") :jump-to-captured t :unnarrowed t)
-                                     ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y%m%dT%H%M%S>--permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :jump-to-captured t :unnarrowed t)))
-  (add-to-list 'display-buffer-alist
-	       '("\\*org-roam\\*"
-                 (display-buffer-in-direction)
-                 (direction . right)
-                 (window-width . 0.5)
-                 (window-height . fit-window-to-buffer)))
-  (cl-defmethod org-roam-node-type ((node org-roam-node))
-    "Return the TYPE of NODE."
-    (condition-case nil
-        (file-name-nondirectory (directory-file-name
-			         (file-name-directory
-                                  (file-relative-name (org-roam-node-file node) org-roam-directory))))
-      (error "")))
-
-  (org-roam-db-autosync-mode)
-  (add-hook 'org-roam-mode-hook #'visual-line-mode)
-  (add-hook 'org-roam-mode-hook #'org-indent-mode)) ;; org roam ends here
 
 ;; org hooks
 (add-hook 'org-mode-hook 'visual-line-mode)
@@ -777,10 +760,32 @@
 (use-package denote
   :ensure t
   :config
+  (setq denote-directory "~/my-files/business/notes")
   (denote-rename-buffer-mode t)
+  (require 'denote-silo-extras)
+  (setq denote-silo-extras-directories '("~/my-files/business/notes" "~/my-files/phd/notes/"))
+  (require 'denote-journal-extras)
   :hook
   (dired-mode . denote-dired-mode))
 
+;; -------------------------------------------------- ;;
+;; CITAR                                              ;;
+;; -------------------------------------------------- ;;
+
+(use-package citar
+  :ensure t
+  :custom
+  (org-cite-insert-processor 'citar)
+  (org-cite-follow-processor 'citar)
+  (org-cite-activate-processor 'citar)
+  (citar-bibliography "~/my-files/bibliography/20240403T212049--bibliography__bib_bibtex_cite.bib"))
+
+(use-package citar-denote
+  :ensure t
+  :config
+  (citar-denote-mode)
+  :custom
+  (citar-open-always-create-notes t))
 
 ;; -------------------------------------------------- ;;
 ;; STYLING                                            ;;
@@ -892,10 +897,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(modus-vivendi))
- '(custom-safe-themes
-   '("0f76f9e0af168197f4798aba5c5ef18e07c926f4e7676b95f2a13771355ce850" "a242356ae1aebe9f633974c0c29b10f3e00ec2bc96a61ff2cdad5ffa4264996d" "aed3a896c4ea7cd7603f7a242fe2ab21f1539ab4934347e32b0070a83c9ece01" default))
  '(org-agenda-files
    '("~/my-files/nextcloud/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "~/my-files/nextcloud/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
