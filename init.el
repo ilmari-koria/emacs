@@ -335,6 +335,12 @@
   (defengine thesaurus "https://www.thesaurus.com/browse/%s"
 	     :keybinding "t"))
 
+;; -------------------------------------------------- ;;
+;; EBIB                                              ;;
+;; -------------------------------------------------- ;;
+(use-package ebib
+  :ensure t)
+
 
 ;; -------------------------------------------------- ;;
 ;; ENCRYPTION                                         ;;
@@ -481,9 +487,10 @@
   (require 'oc-csl)
   (require 'oc-biblatex)
   (require 'oc-natbib)
+  (require 'oc-bibtex)
   (require 'ox-extra)
   (require 'ox-latex)
-  (require 'ox-bibtex)
+  ;; (require 'ox-bibtex)
   (ox-extras-activate
    '(ignore-headlines)))
 
@@ -787,6 +794,10 @@
   :custom
   (citar-open-always-create-notes t))
 
+;; use citeproc for csl bib stylesheets
+(use-package citeproc
+  :ensure t)
+
 ;; -------------------------------------------------- ;;
 ;; STYLING                                            ;;
 ;; -------------------------------------------------- ;;
@@ -897,10 +908,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(modus-operandi))
+ '(custom-safe-themes
+   '("b29ba9bfdb34d71ecf3322951425a73d825fb2c002434282d2e0e8c44fce8185" default))
  '(org-agenda-files
    '("~/my-files/nextcloud/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "~/my-files/nextcloud/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
