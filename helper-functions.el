@@ -123,7 +123,7 @@
   ;; helper function update blog
   (interactive)
   (shell-command "bash check-and-delete-files")
-  (find-file "~/my-files/emacs/org/roam/blog/")
+  (find-file "~/my-files/blog/posts")
   (org-static-blog-publish)
   (shell-command "bash update-website"))
 

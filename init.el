@@ -284,6 +284,23 @@
 
 
 ;; -------------------------------------------------- ;;
+;; PDF                                                ;;
+;; -------------------------------------------------- ;;
+
+(use-package pdf-tools
+  :ensure t
+  :mode (("\\.pdf\\'" . pdf-view-mode))
+  :config
+  (pdf-tools-install)
+  (pdf-loader-install)
+  (setq pdf-view-use-scaling nil)
+  (setq pdf-view-use-imagemagick nil))
+
+(add-hook 'pdf-view-mode-hook (lambda () (pdf-view-themed-minor-mode)))
+(setq revert-without-query '(".pdf"))
+
+
+;; -------------------------------------------------- ;;
 ;; ELFEED                                             ;;
 ;; -------------------------------------------------- ;;
 
@@ -349,6 +366,7 @@
 (require 'epa-file)
 (epa-file-enable)
 (setq auth-sources '("~/.authinfo.gpg"))
+
 
 ;; -------------------------------------------------- ;;
 ;; ORG                                                ;;
@@ -551,15 +569,6 @@
  '((python . t)
    (latex . t)))
 
-;; org roam vis
-(use-package org-roam-ui
-  :ensure t
-  :config
-  (setq org-roam-ui-sync-theme t)
-  (setq org-roam-ui-follow t)
-  (setq org-roam-ui-update-on-save t)
-  (setq org-roam-ui-open-on-start t))
-
 ;; org wc
 (use-package org-wc
   :ensure t
@@ -574,9 +583,9 @@
   (setq org-static-blog-publish-title "Ilmari's Webpage")
   (setq org-static-blog-publish-url "https://ilmarikoria.xyz")
   (setq org-static-blog-archive-file "posts.html")
-  (setq org-static-blog-publish-directory "~/my-files/websites/ilmarikoria/")
-  (setq org-static-blog-posts-directory "~/my-files/org/roam/blog/")
-  (setq org-static-blog-drafts-directory "~/my-files/org/roam/blog-drafts-dummy/") ;; because org-static-blog-publish will publish drafts folder
+  (setq org-static-blog-publish-directory "~/my-files/blog/ilmarikoria/")
+  (setq org-static-blog-posts-directory "~/my-files/blog/posts/")
+  (setq org-static-blog-drafts-directory "~/my-files/blog/post-dummy/") ;; because org-static-blog-publish will publish drafts folder
   (setq org-static-blog-preview-date-first-p t)
   (setq org-static-blog-enable-tags t)
   (setq org-static-blog-preview-ellipsis "")
@@ -602,13 +611,11 @@
                 <li><a href=\"https://ilmarikoria.xyz/tags.html\">All Tags</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/rss.xml\">RSS</a></li>
                 <li><a href=\"https://ilmarikoria.xyz/static/gallery/index.html\">Gallery</a></li>
-                <li><a href=\"https://git.ilmarikoria.xyz/\">Git</a></li>
-                <li><a href=\"https://ilmarikoria.xyz/ilmari-koria-resume.pdf\">Résumé</a></li>
-                <li><a href=\"https://nextcloud.ilmarikoria.xyz/\">Nextcloud</a></li>
-                <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
+                 <li><a href=\"https://ilmarikoria.xyz/ilmari-koria-resume.pdf\">Résumé</a></li>
+                 <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
             </ul>")
   (setq org-static-blog-page-postamble
-        (format "<p>This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ <a href=\"https://ilmarikoria.xyz/static/ilmari-pub.asc\">PGP Key</a> ❘ Support this site? Bitcoin BTC [<a href=\"https://ilmarikoria.xyz/static/bitcoin-qr.png\">QR</a>]: <code>bc1qjc0frqyyrgmcsugw7vmlj4e9vhxfvsrut3nnvs</code></p>
+        (format "<p>This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>)</p>
                  <p><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a> ❘ <a href=\"#top\">Top</p>"
                 (format-time-string "%b %e, %Y")
                 emacs-version
@@ -770,7 +777,7 @@
   (setq denote-directory "~/my-files/business/notes")
   (denote-rename-buffer-mode t)
   (require 'denote-silo-extras)
-  (setq denote-silo-extras-directories '("~/my-files/business/notes" "~/my-files/phd/notes/"))
+  (setq denote-silo-extras-directories '("~/my-files/business/notes" "~/my-files/phd/notes/" "~/my-files/blog/notes"))
   (require 'denote-journal-extras)
   :hook
   (dired-mode . denote-dired-mode))
@@ -861,18 +868,6 @@
 (global-set-key (kbd "C-= y") 'org-insert-heading-after-current)
 (global-set-key (kbd "C-= z" ) 'my-sentence-counter)
 
-;; roam bindings
-(global-set-key (kbd "C-c n c") 'org-roam-capture)
-(global-set-key (kbd "C-c n d") 'org-roam-dailies-capture-today)
-(global-set-key (kbd "C-c n f") 'org-roam-node-find)
-(global-set-key (kbd "C-c n g") 'org-roam-graph)
-(global-set-key (kbd "C-c n i") 'org-roam-node-insert)
-(global-set-key (kbd "C-c n j") 'org-journal-new-entry)
-(global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
-(global-set-key (kbd "C-c n p") 'completion-at-point)
-(global-set-key (kbd "C-c n r") 'org-journal-search-forever)
-(global-set-key (kbd "C-c n s") 'deft)
-
 ;; multiple cursors
 (global-set-key (kbd "C-M-j") 'mc/mark-all-dwim)
 (global-set-key (kbd "C-M-c") 'mc/edit-lines)
@@ -914,7 +909,7 @@
  '(org-agenda-files
    '("~/my-files/nextcloud/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "~/my-files/nextcloud/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-roam-ui org-pomodoro org-roam-bibtex org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(pdf-tools ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
