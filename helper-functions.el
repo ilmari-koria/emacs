@@ -122,10 +122,10 @@
 (defun my-update-blog ()
   ;; helper function update blog
   (interactive)
-  (shell-command "bash check-and-delete-files")
+  (shell-command "bash ~/my-files/bin/check-and-delete-files")
   (find-file "~/my-files/blog/posts")
   (org-static-blog-publish)
-  (shell-command "bash update-website"))
+  (shell-command "bash ~/my-files/bin/update-website"))
 
 (defun my-org-journal-find-location ()
   ;; helper function find journal location

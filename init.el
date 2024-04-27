@@ -382,7 +382,7 @@
 (setq holiday-bahai-holidays nil)
 (setq holiday-hebrew-holidays nil)
 (setq holiday-islamic-holidays nil)
-(setq diary-file "~/my-files/nextcloud/home-agenda/diary-google")
+(setq diary-file "~/my-files/todo/home-agenda/diary-google")
 
 ;; tags (max 6)
 (setq org-tag-alist '(
@@ -459,14 +459,14 @@
 ;; org capture templates
 (setq org-capture-templates '(
                               ("t" "todo")
-                              ("ts" "scheduled" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %?\nSCHEDULED: %^t DEADLINE: %^t\n")
-                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* [#3] WAITING %?\n")
-                              ("tr" "reminder" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* REMINDER [#3] %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
-                              ("tf" "fleeting" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
-                              ("tr" "repeat" entry (file+headline "~/my-files/nextcloud/home-agenda/agenda/agenda.org" "REPEAT-TASKS") "* REPEAT [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
+                              ("ts" "scheduled" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %?\nSCHEDULED: %^t DEADLINE: %^t\n")
+                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* [#3] WAITING %?\n")
+                              ("tr" "reminder" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* REMINDER [#3] %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
+                              ("tf" "fleeting" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
+                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
+                              ("tr" "repeat" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "REPEAT-TASKS") "* REPEAT [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
 
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
@@ -503,9 +503,9 @@
   :ensure t
   :config
   (require 'oc-csl)
-  (require 'oc-biblatex)
+  ;;  (require 'oc-biblatex)
   (require 'oc-natbib)
-  (require 'oc-bibtex)
+  ;;   (require 'oc-bibtex)
   (require 'ox-extra)
   (require 'ox-latex)
   ;; (require 'ox-bibtex)
@@ -615,7 +615,7 @@
                  <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
             </ul>")
   (setq org-static-blog-page-postamble
-        (format "<p>This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>)</p>
+        (format "<p>This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ © Ilmari Koria 2024 (Public Key: <a id=\"fingerprint\" href=\"https:://ilmarikoria.xyz/ilmari-koria-public-key.asc\">D8DA 85D0 4C6A BD1F 8DA4  2895 3E3B 85AB 3A8D FFD4</span>)</p>
                  <p><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a> ❘ <a href=\"#top\">Top</p>"
                 (format-time-string "%b %e, %Y")
                 emacs-version
@@ -903,11 +903,11 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(modus-operandi))
+ '(custom-enabled-themes '(modus-vivendi))
  '(custom-safe-themes
    '("b29ba9bfdb34d71ecf3322951425a73d825fb2c002434282d2e0e8c44fce8185" default))
  '(org-agenda-files
-   '("~/my-files/nextcloud/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/nextcloud/work-agenda/task-index-work/misc-index.org" "~/my-files/nextcloud/home-agenda/agenda/agenda.org"))
+   '("~/my-files/todo/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/todo/work-agenda/task-index-work/misc-index.org" "~/my-files/todo/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
    '(pdf-tools ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
