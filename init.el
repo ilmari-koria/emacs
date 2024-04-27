@@ -161,7 +161,7 @@
            (funcall bibtex-autokey-before-presentation-function autokey)
          autokey))))
 
-(add-hook 'bibtex-mode-hook 'format-all-mode)
+; (add-hook 'bibtex-mode-hook 'format-all-mode)
 
 ;; -------------------------------------------------- ;;
 ;; REPEAT                                             ;;
@@ -598,25 +598,25 @@
                                             <p>Feel free to contact me via <a href=\"mailto:ilmarikoria@posteo.net\">ilmarikoria@posteo.net</a>.</p>
                                             <p>I also have accounts on <a href=\"https://uk.linkedin.com/in/ilmari-koria-3151a5291\">LinkedIn</a> and <a href=\"https://www.youtube.com/channel/UCIwGuCqBXzXGozj0YeAcOTA\">YouTube</a>, but I am only semi-active on these.</p>
                                             <h2>Recent posts</h2>")
-  (setq org-static-blog-page-header "<meta name=\"author\" content=\"Ilmari Koria, ilmarikoria@posteo.net\">
-                                     <meta name=\"referrer\" content=\"no-referrer\">
+  (setq org-static-blog-page-header "<meta name=\"author\" content=\"ilmarikoria@posteo.net\">
                                      <meta name=\"viewport\" content=\"initial-scale=1.0,maximum-scale=1.0,user-scalable=no\" />
+                                     <link rel=\"canonical\" href=\"https://ilmarikoria.xyz\">
                                      <link href=\"static/style.css\" rel=\"stylesheet\" type=\"text/css\" />
                                      <link rel=\"icon\" href=\"data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏞</text></svg>\">")
   (setq org-static-blog-page-preamble
         "<h1>Ilmari's Webpage</h1>
-             <ul>
-                <li><a href=\"https://ilmarikoria.xyz\">Home</a></li>
-                <li><a href=\"https://ilmarikoria.xyz/posts.html\">Posts</a></li>
-                <li><a href=\"https://ilmarikoria.xyz/tags.html\">All Tags</a></li>
-                <li><a href=\"https://ilmarikoria.xyz/rss.xml\">RSS</a></li>
-                <li><a href=\"https://ilmarikoria.xyz/static/gallery/index.html\">Gallery</a></li>
-                 <li><a href=\"https://ilmarikoria.xyz/ilmari-koria-resume.pdf\">Résumé</a></li>
-                 <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
-            </ul>")
+                                     <ul>
+                                     <li><a href=\"https://ilmarikoria.xyz\">Home</a></li>
+                                     <li><a href=\"https://ilmarikoria.xyz/posts.html\">Posts</a></li>
+                                     <li><a href=\"https://ilmarikoria.xyz/tags.html\">All Tags</a></li>
+                                     <li><a href=\"https://ilmarikoria.xyz/rss.xml\">RSS</a></li>
+                                     <li><a href=\"https://ilmarikoria.xyz/static/gallery/index.html\">Gallery</a></li>
+                                     <li><a href=\"https://ilmarikoria.xyz/ilmari-koria-resume.pdf\">Résumé</a></li>
+                                     <li><a href=\"https://freesound.org/people/ilmari_freesound/\">Freesound</a></li>
+                                     </ul>")
   (setq org-static-blog-page-postamble
-        (format "<p>This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ © Ilmari Koria 2024 (Public Key: <a id=\"fingerprint\" href=\"https:://ilmarikoria.xyz/ilmari-koria-public-key.asc\">D8DA 85D0 4C6A BD1F 8DA4  2895 3E3B 85AB 3A8D FFD4</span>)</p>
-                 <p><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a> ❘ <a href=\"#top\">Top</p>"
+        (format "<p>This page was last modified on %s ❘ Created in GNU Emacs version %s and org-mode version %s (using <a href=\"https://github.com/bastibe/org-static-blog\">org-static-blog</a>) ❘ Public Key: <a id=\"fingerprint\" href=\"https://ilmarikoria.xyz/static/ilmari-koria-public-key.asc\">D8DA 85D0 4C6A BD1F 8DA4  2895 3E3B 85AB 3A8D FFD4</a></p>
+                                     <p><a href=\"https://creativecommons.org/licenses/by-nc/4.0/\">License</a> ❘ <a href=\"#top\">Top</p>"
                 (format-time-string "%b %e, %Y")
                 emacs-version
                 (org-version)))) ;; -- org static blog ends here
@@ -682,9 +682,6 @@
      ("+" "+")
      ("_" "_"))))
 
-;; format all
-(use-package format-all
-  :ensure t)
 
 ;; multiple cursors
 (use-package multiple-cursors
@@ -703,11 +700,11 @@
   :ensure t)
 
 ;; format all
-(use-package format-all
-  :ensure t
-  :commands format-all-mode
-  :config
-  (add-hook 'format-all-mode-hook 'format-all-ensure-formatter))
+;; (use-package format-all
+;;   :ensure t
+;;   :commands format-all-mode
+;;   :config
+;;   (add-hook 'format-all-mode-hook 'format-all-ensure-formatter))
 
 ;; prog mode hooks
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
@@ -717,7 +714,7 @@
 (add-hook 'prog-mode-hook 'rainbow-mode)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'prog-mode-hook 'multiple-cursors-mode)
-(add-hook 'prog-mode-hook 'format-all-mode)
+; (add-hook 'prog-mode-hook 'format-all-mode)
 
 ;; html mode hook
 (add-hook 'html-mode-hook 'display-line-numbers-mode)
@@ -727,7 +724,7 @@
 (add-hook 'html-mode-hook 'rainbow-mode)
 (add-hook 'html-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'html-mode-hook 'multiple-cursors-mode)
-(add-hook 'html-mode-hook 'format-all-mode)
+; (add-hook 'html-mode-hook 'format-all-mode)
 
 ;; nxml mode hook
 (add-hook 'nxml-mode-hook 'display-line-numbers-mode)
@@ -737,7 +734,7 @@
 (add-hook 'nxml-mode-hook 'rainbow-mode)
 (add-hook 'nxml-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'nxml-mode-hook 'multiple-cursors-mode)
-(add-hook 'nxml-mode-hook 'format-all-mode)
+; (add-hook 'nxml-mode-hook 'format-all-mode)
 
 
 ;; -------------------------------------------------- ;;
@@ -751,7 +748,7 @@
 (setq TeX-source-correlate-start-server t)
 
 (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
-(add-hook 'latex-mode-hook 'format-all-mode)
+; (add-hook 'latex-mode-hook 'format-all-mode)
 (add-hook 'latex-mode-hook 'rainbow-mode)
 (add-hook 'latex-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'latex-mode-hook 'display-line-numbers-mode)
@@ -842,7 +839,7 @@
 (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
 
 (global-set-key (kbd "C-= a") 'org-agenda)
-(global-set-key (kbd "C-= b") 'format-all-buffer)
+; (global-set-key (kbd "C-= b") 'format-all-buffer)
 (global-set-key (kbd "C-= c") 'comment-region)
 (global-set-key (kbd "C-= d") 'org-deadline)
 (global-set-key (kbd "C-= e") 'org-sort)
@@ -909,7 +906,7 @@
  '(org-agenda-files
    '("~/my-files/todo/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/todo/work-agenda/task-index-work/misc-index.org" "~/my-files/todo/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(pdf-tools ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
