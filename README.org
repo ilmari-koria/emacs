@@ -1,4 +1,4 @@
-My slightly haphazard .emacs file.
+My slightly haphazard Emacs init file.
 
 #+begin_quote
 "Master, does Emacs possess the Buddha nature?" the novice asked.

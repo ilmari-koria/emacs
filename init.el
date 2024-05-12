@@ -112,7 +112,6 @@
 ;; load path
 ;; TODO check best practice for load path
 (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/")
-(add-to-list 'load-path "~/my-files/emacs/init/")
 (load "./helper-functions.el")
 
 ;; recentf
@@ -355,6 +354,7 @@
 ;; -------------------------------------------------- ;;
 ;; EBIB                                              ;;
 ;; -------------------------------------------------- ;;
+
 (use-package ebib
   :ensure t)
 
@@ -906,7 +906,7 @@
  '(org-agenda-files
    '("~/my-files/todo/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/todo/work-agenda/task-index-work/misc-index.org" "~/my-files/todo/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
