@@ -112,7 +112,7 @@
 ;; load path
 ;; TODO check best practice for load path
 (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/")
-(load "./helper-functions.el")
+(load "helper-functions.el")
 
 ;; recentf
 (recentf-mode t)
@@ -127,40 +127,6 @@
   :config
   (require 'golden-ratio)
   (golden-ratio-mode 1))
-
-;; -------------------------------------------------- ;;
-;; BIBTEX                                             ;;
-;; -------------------------------------------------- ;;
-
-(setq bibtex-autokey-edit-before-use nil)
-(setq bibtex-autokey-titleword-separator "")
-(setq bibtex-autokey-year-length 4)
-(setq bibtex-autokey-year-title-separator "")
-(setq bibtex-autokey-titleword-length 12)
-
-;; emacs bibtex doesn't provide a convenient way to order entries in bibkey creation
-(eval-after-load "bibtex"
-  '(defun bibtex-generate-autokey ()
-     (let* ((names (bibtex-autokey-get-names))
-            (title (bibtex-autokey-get-title))
-            (year (bibtex-autokey-get-year))
-            (autokey (concat
-                      bibtex-autokey-prefix-string
-                      names
-                      (unless (or (equal names "")
-                                  (equal title ""))
-                        "")
-                      title
-                      (unless (or (and (equal names "")
-                                       (equal title ""))
-                                  (equal year ""))
-                        bibtex-autokey-year-title-separator)
-                      year)))
-       (if bibtex-autokey-before-presentation-function
-           (funcall bibtex-autokey-before-presentation-function autokey)
-         autokey))))
-
-; (add-hook 'bibtex-mode-hook 'format-all-mode)
 
 ;; -------------------------------------------------- ;;
 ;; REPEAT                                             ;;
@@ -279,7 +245,7 @@
   (key-chord-define-global "ii" 'my-mark-and-run-my-anki-cloze-but-dont-increase-counter)
   (key-chord-define-global "ss" 'my-set-cloze-counter)
   (key-chord-define-global "rr" 'my-reset-cloze-counter)
-  (key-chord-mode 1))
+  (key-chord-mode -1))
 
 
 ;; -------------------------------------------------- ;;
@@ -328,14 +294,7 @@
 ;; SEARCHING                                          ;;
 ;; -------------------------------------------------- ;;
 
-;; deft
-(use-package deft
-  :ensure t
-  :config
-  (setq deft-recursive t)
-  (setq deft-use-filter-string-for-filename t)
-  (setq deft-default-extension "org")
-  (setq deft-directory "~/my-files/emacs/org"))
+
 
 ;; engine
 (use-package engine-mode
@@ -470,8 +429,9 @@
 
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
-                              ("k" "anki")
-                              ("km" "rossModernMandarinChinese2023" entry (file "~/my-files/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
+                              ("a" "anki")
+                              ("am" "rossModernMandarinChinese2023" entry (file "~/my-files/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
+                              ("ax" "xslt" entry (file "/home/ilmari/my-files/org/anki/xslt.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: xslt\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
                               )) ;; org capture ends here
 
 ;; anki reset cloze hook after capture
@@ -756,51 +716,105 @@
 (add-hook 'latex-mode-hook 'hl-line-mode)
 (add-hook 'latex-mode-hook 'multiple-cursors-mode)
 
+
 ;; -------------------------------------------------- ;;
-;; DENOTE                                             ;;
+;; ROAM + REF                                         ;;
 ;; -------------------------------------------------- ;;
 
-;; TODO read:
-;; - https://github.com/pprevos/citar-denote
-;; - https://lucidmanager.org/productivity/taking-notes-with-emacs-denote/
-;; - https://lucidmanager.org/productivity/using-emacs-image-dired/ ;; for the image file formatting
-;; - https://protesilaos.com/emacs/denote
-;; - https://lucidmanager.org/productivity/emacs-bibtex-mode/
-;; - https://github.com/emacs-citar/citar
-
-(use-package denote
+(use-package org-ref
   :ensure t
   :config
-  (setq denote-directory "~/my-files/business/notes")
-  (denote-rename-buffer-mode t)
-  (require 'denote-silo-extras)
-  (setq denote-silo-extras-directories '("~/my-files/business/notes" "~/my-files/phd/notes/" "~/my-files/blog/notes"))
-  (require 'denote-journal-extras)
-  :hook
-  (dired-mode . denote-dired-mode))
+  (setq org-ref-activate-cite-links t)
+  (setq org-ref-cite-insert-version 2)
+  (setq org-ref-show-broken-links nil)
+  (setq bibtex-completion-bibliography '("~/my-files/zotero/bibliography.bib"))
+  (setq bibtex-completion-notes-template-multiple-files "* ${author-or-editor}, ${title}, ${journal}, (${year}) :${=type=}: \n\nSee [[cite:&${=key=}]]\n")
+  (setq bibtex-completion-additional-search-fields '(keywords))
+  (setq bibtex-completion-display-formats
+        '((article       . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${journal:40}")
+          (inbook        . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} Chapter ${chapter:32}")
+          (incollection  . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (inproceedings . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*} ${booktitle:40}")
+          (t             . "${=has-pdf=:1}${=has-note=:1} ${year:4} ${author:36} ${title:*}")))
+  (setq bibtex-completion-pdf-open-function
+        (lambda (fpath)
+          (call-process "open" nil 0 nil fpath)))
+  (require 'org-ref)
+  (define-key org-mode-map (kbd "C-= ]") 'org-ref-insert-link))
 
-;; -------------------------------------------------- ;;
-;; CITAR                                              ;;
-;; -------------------------------------------------- ;;
-
-(use-package citar
-  :ensure t
-  :custom
-  (org-cite-insert-processor 'citar)
-  (org-cite-follow-processor 'citar)
-  (org-cite-activate-processor 'citar)
-  (citar-bibliography "~/my-files/bibliography/20240403T212049--bibliography__bib_bibtex_cite.bib"))
-
-(use-package citar-denote
+;; org roam
+(use-package org-roam
   :ensure t
   :config
-  (citar-denote-mode)
-  :custom
-  (citar-open-always-create-notes t))
+  (setq org-roam-v2-ack t)
+  (setq org-roam-directory (file-truename "~/my-files/roam/"))
+  (setq org-roam-completion-everywhere t)
+  (setq org-roam-node-display-template (concat "${type:15} | " (propertize "${tags:40}" 'face 'org-tag)" | ${title:*}"))
+  (setq org-roam-db-node-include-function
+        (lambda ()
+          (not (member "ATTACH" (org-get-tags)))
+          (not (member "attach" (org-get-tags)))
+          (not (member "noexport" (org-get-tags)))
+          (not (member "ignore" (org-get-tags)))
+          (not (member "NOEXPORT" (org-get-tags)))))
 
-;; use citeproc for csl bib stylesheets
-(use-package citeproc
-  :ensure t)
+
+  (setq org-roam-capture-templates '(
+                                     ("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t)
+                                     ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)
+                                     ("r" "reference" plain "%?" :target (file+head "reference/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :unnarrowed t)
+                                     ))
+
+(setq org-roam-dailies-directory "~/my-files/roam/fleeting"
+      org-roam-dailies-capture-templates '(("f" "fleeting-notes" entry "\n* %<%Y-%m-%d %H:%M> - %?" :target (file "fleeting-notes.org"))))
+
+
+  (add-to-list 'display-buffer-alist
+	       '("\\*org-roam\\*"
+                 (display-buffer-in-direction)
+                 (direction . right)
+                 (window-width . 0.5)
+                 (window-height . fit-window-to-buffer)))
+
+  (cl-defmethod org-roam-node-type ((node org-roam-node))
+    "Return the TYPE of NODE."
+    (condition-case nil
+        (file-name-nondirectory (directory-file-name
+			         (file-name-directory
+                                  (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (error "")))
+
+
+  (org-roam-db-autosync-mode)) ;; org roam ends here
+
+(use-package org-roam-bibtex
+  :ensure t
+  :after org-roam
+  :config
+  (setq orb-insert-follow-link t)
+  (add-hook 'after-init-hook 'org-roam-bibtex-mode))
+
+;; deft
+(use-package deft
+  :ensure t
+  :config
+  (setq deft-recursive t)
+  (setq deft-use-filter-string-for-filename t)
+  (setq deft-default-extension "org")
+  (setq deft-directory "~/my-files/roam"))
+
+
+(global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
+(global-set-key (kbd "C-c n f") 'org-roam-node-find)
+(global-set-key (kbd "C-c n g") 'org-roam-graph)
+(global-set-key (kbd "C-c n i") 'org-roam-node-insert)
+(global-set-key (kbd "C-c n c") 'org-roam-capture)
+(global-set-key (kbd "C-c n d") 'org-roam-dailies-capture-today)
+(global-set-key (kbd "C-c n j") 'org-journal-new-entry)
+(global-set-key (kbd "C-c n r") 'org-journal-search-forever)
+(global-set-key (kbd "C-c n p") 'completion-at-point)
+(global-set-key (kbd "C-c n s") 'deft)
+
 
 ;; -------------------------------------------------- ;;
 ;; STYLING                                            ;;
@@ -906,7 +920,7 @@
  '(org-agenda-files
    '("~/my-files/todo/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/todo/work-agenda/task-index-work/misc-index.org" "~/my-files/todo/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
-   '(org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(org-roam-bibtex org-roam org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
