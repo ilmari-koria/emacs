@@ -476,7 +476,7 @@
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 
 ;; org archive
-(setq org-archive-location "~/my-files/org/archive/org-archive.org::datetree/")
+(setq org-archive-location "~/my-files/todo/TODO-archive.org::datetree/")
 (setq org-archive-mark-done t)
 (setq org-archive-subtree-save-file-p t)
 
@@ -847,7 +847,7 @@
  '(custom-safe-themes
    '("b29ba9bfdb34d71ecf3322951425a73d825fb2c002434282d2e0e8c44fce8185" default))
  '(org-agenda-files
-   '("~/my-files/todo/cbeta-agenda/20240327T214353--cbeta-agenda__agenda_org_todo.org" "~/my-files/todo/work-agenda/task-index-work/misc-index.org" "~/my-files/todo/home-agenda/agenda/agenda.org"))
+   '("/home/ilmari/my-files/todo/home-agenda/agenda/agenda.org"))
  '(package-selected-packages
    '(anki-editor org-roam-bibtex org-roam org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
