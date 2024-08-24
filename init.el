@@ -129,6 +129,14 @@
   (golden-ratio-mode 1))
 
 ;; -------------------------------------------------- ;;
+;; SuperCollider                                      ;;
+;; -------------------------------------------------- ;;
+
+(add-to-list 'load-path "~/.local/share/SuperCollider/downloaded-quarks/scel/el")
+(require 'sclang)
+
+
+;; -------------------------------------------------- ;;
 ;; REPEAT                                             ;;
 ;; -------------------------------------------------- ;;
 
@@ -396,11 +404,11 @@
 	  (agenda ""
 		  ((org-agenda-start-on-weekday nil)
 		   (org-agenda-start-day "+1d")
-		   (org-agenda-span 7)
+		   (org-agenda-span 3)
 		   (org-deadline-warning-days 0)
 		   (org-agenda-block-separator nil)
 		   (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
-		   (org-agenda-overriding-header "\nNEXT SEVEN DAYS")))
+		   (org-agenda-overriding-header "\nNEXT THREE DAYS")))
 	  (todo "*"
 		((org-agenda-overriding-header "UNSCHEDULED TASKS")
 		 (org-tags-match-list-sublevels t)
@@ -409,14 +417,14 @@
 ;; org capture templates
 (setq org-capture-templates '(
                               ("t" "todo")
-                              ("ts" "scheduled" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %?\nSCHEDULED: %^t DEADLINE: %^t\n")
-                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* [#3] WAITING %?\n")
-                              ("tr" "reminder" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* REMINDER [#3] %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
-                              ("tf" "fleeting" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
-                              ("tr" "repeat" entry (file+headline "~/my-files/todo/home-agenda/agenda/agenda.org" "REPEAT-TASKS") "* REPEAT [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
+                              ("ts" "scheduled" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %?\nSCHEDULED: %^t DEADLINE: %^t\n")
+                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* [#3] WAITING %?\n")
+                              ("tr" "reminder" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* REMINDER [#3] %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
+                              ("tf" "fleeting" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
+                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
+                              ("tr" "repeat" entry (file+headline "~/my-files/todo/TODO.org" "REPEAT-TASKS") "* REPEAT [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
 
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
@@ -439,9 +447,14 @@
 ;; org latex
 (setq org-latex-tables-centered nil)
 (setq org-latex-images-centered nil)
-(setq org-latex-tables-centered nil)
 (setq org-latex-toc-command "\\tableofcontents \\addtocontents{toc}{\\protect\\thispagestyle{empty}} \\newpage")
 (setq org-latex-pdf-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+;; (setq org-latex-pdf-process '(
+;; "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;; "bibtex %b"
+;; "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;; "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+;; ))
 
 ;; org html
 (setq org-html-footnotes-section "<div id=\"footnotes\"><h2 class=\"footnotes\">%s </h2><div id=\"text-footnotes\">%s</div></div>")
@@ -692,6 +705,7 @@
                                      ("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t)
                                      ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)
                                      ("r" "reference" plain "%?" :target (file+head "reference/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :unnarrowed t)
+                                     ("i" "index" plain "%?" :target (file+head "index/index-${slug}.org" "#+title: ${title}\n#+filetags: index\n") :unnarrowed t)
                                      ))
 
 (setq org-roam-dailies-directory "~/my-files/roam/fleeting"
@@ -846,8 +860,115 @@
  '(custom-enabled-themes '(modus-vivendi))
  '(custom-safe-themes
    '("b29ba9bfdb34d71ecf3322951425a73d825fb2c002434282d2e0e8c44fce8185" default))
- '(org-agenda-files
-   '("/home/ilmari/my-files/todo/home-agenda/agenda/agenda.org"))
+ '(format-all-default-formatters
+   '(("Assembly" asmfmt)
+     ("ATS" atsfmt)
+     ("Bazel" buildifier)
+     ("BibTeX" emacs-bibtex)
+     ("C" clang-format)
+     ("C#" csharpier)
+     ("C++" clang-format)
+     ("Cabal Config" cabal-fmt)
+     ("Clojure" zprint)
+     ("CMake" cmake-format)
+     ("Crystal" crystal)
+     ("CSS" prettier)
+     ("Cuda" clang-format)
+     ("D" dfmt)
+     ("Dart" dart-format)
+     ("Dhall" dhall)
+     ("Dockerfile" dockfmt)
+     ("Elixir" mix-format)
+     ("Elm" elm-format)
+     ("Emacs Lisp" emacs-lisp)
+     ("Erlang" efmt)
+     ("F#" fantomas)
+     ("Fish" fish-indent)
+     ("Fortran Free Form" fprettify)
+     ("GLSL" clang-format)
+     ("Go" gofmt)
+     ("GraphQL" prettier)
+     ("Haskell" brittany)
+     ("HCL" hclfmt)
+     ("HTML" html-tidy)
+     ("HTML+EEX" mix-format)
+     ("HTML+ERB" erb-format)
+     ("Hy" emacs-hy)
+     ("Java" clang-format)
+     ("JavaScript" prettier)
+     ("JSON" prettier)
+     ("JSON5" prettier)
+     ("Jsonnet" jsonnetfmt)
+     ("JSX" prettier)
+     ("Kotlin" ktlint)
+     ("LaTeX" /usr/bin/latexindent)
+     ("Less" prettier)
+     ("Literate Haskell" brittany)
+     ("Lua" lua-fmt)
+     ("Markdown" prettier)
+     ("Meson" muon-fmt)
+     ("Nix" nixpkgs-fmt)
+     ("Objective-C" clang-format)
+     ("OCaml" ocp-indent)
+     ("Perl" perltidy)
+     ("PHP" prettier)
+     ("Protocol Buffer" clang-format)
+     ("PureScript" purty)
+     ("Python" black)
+     ("R" styler)
+     ("Reason" bsrefmt)
+     ("ReScript" rescript)
+     ("Ruby" rufo)
+     ("Rust" rustfmt)
+     ("Scala" scalafmt)
+     ("SCSS" prettier)
+     ("Shell" shfmt)
+     ("Solidity" prettier)
+     ("SQL" sqlformat)
+     ("Svelte" prettier)
+     ("Swift" swiftformat)
+     ("Terraform" terraform-fmt)
+     ("TOML" prettier)
+     ("TSX" prettier)
+     ("TypeScript" prettier)
+     ("V" v-fmt)
+     ("Verilog" istyle-verilog)
+     ("Vue" prettier)
+     ("XML" html-tidy)
+     ("YAML" prettier)
+     ("Zig" zig)
+     ("_Angular" prettier)
+     ("_Beancount" bean-format)
+     ("_Caddyfile" caddy-fmt)
+     ("_Flow" prettier)
+     ("_Gleam" gleam)
+     ("_Ledger" ledger-mode)
+     ("_Nginx" nginxfmt)
+     ("_Snakemake" snakefmt)))
+ '(org-agenda-files '("~/my-files/todo/todo/home/TODO.org"))
+ '(org-latex-classes
+   '(("article" "\\documentclass[11pt]{article}"
+      ("\\section{%s}" . "\\section*{%s}")
+      ("\\subsection{%s}" . "\\subsection*{%s}")
+      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+      ("\\paragraph{%s}" . "\\paragraph*{%s}")
+      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
+     ("report" "\\documentclass[11pt]{report}"
+      ("\\part{%s}" . "\\part*{%s}")
+      ("\\chapter{%s}" . "\\chapter*{%s}")
+      ("\\section{%s}" . "\\section*{%s}")
+      ("\\subsection{%s}" . "\\subsection*{%s}")
+      ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+     ("book" "\\documentclass[11pt]{book}"
+      ("\\part{%s}" . "\\part*{%s}")
+      ("\\chapter{%s}" . "\\chapter*{%s}")
+      ("\\section{%s}" . "\\section*{%s}")
+      ("\\subsection{%s}" . "\\subsection*{%s}")
+      ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
+     ("letter" "\\documentclass[11pt]{letter}")
+     ))
+ '(org-modules
+   '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m org-checklist))
  '(package-selected-packages
    '(anki-editor org-roam-bibtex org-roam org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
 (custom-set-faces
