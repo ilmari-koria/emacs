@@ -48,6 +48,16 @@
 (setq tramp-verbose 1)
 (setq server-client-instructions nil)
 
+;; Disable auto-save and backups for files opened via TRAMP
+(setq tramp-auto-save-directory "~/my-files/emacs/backups")   ;; or any other local directory for auto-save
+(defun disable-auto-save-for-tramp ()
+  "Disable auto-save and backup for TRAMP connections."
+  (when (tramp-tramp-file-p (buffer-file-name))
+    (setq auto-save-default nil)
+    (setq make-backup-files nil)))
+(add-hook 'find-file-hook 'disable-auto-save-for-tramp)
+
+
 ;; undo and deletion
 (setq undo-limit 800000)
 (setq undo-strong-limit 12000000)
@@ -306,6 +316,29 @@
   (elfeed-org)
   (setq rmh-elfeed-org-files (list "~/my-files/org/rss/rss-feed.org")))
 
+(use-package elfeed-tube
+  :ensure t
+  :after elfeed
+  :demand t
+  :config
+  ;; (setq elfeed-tube-auto-save-p nil) ; default value
+  ;; (setq elfeed-tube-auto-fetch-p t)  ; default value
+  (elfeed-tube-setup)
+
+  :bind (:map elfeed-show-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)
+         :map elfeed-search-mode-map
+         ("F" . elfeed-tube-fetch)
+         ([remap save-buffer] . elfeed-tube-save)))
+
+(use-package elfeed-tube-mpv
+  ;; remember that yt-dlp in debian is quite old
+  ;; mpv settings live in mpv.conf
+  :ensure t ;; or :straight t
+  :bind (:map elfeed-show-mode-map
+              ("C-c C-f" . elfeed-tube-mpv-follow-mode)
+              ("C-c C-w" . elfeed-tube-mpv-where)))
 
 ;; -------------------------------------------------- ;;
 ;; SEARCHING                                          ;;
@@ -435,7 +468,23 @@
                               ("tt" "quick-tomorrow" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
                               ("tr" "repeat" entry (file+headline "~/my-files/todo/TODO.org" "REPEAT-TASKS") "* REPEAT [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
 
+                              ("e" "Expense Entry" entry (file+datetree "~/my-files/todo/todo/home/ledger.org") "* %^{Expense name} %^g\n:PROPERTIES:\n:DATE: %T\n:END:\n")
+                              
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
+
+                              ("b" "book" entry (file "~/my-files/blog/org/reading-list.org")
+"* TODO %^{Book Title}
+:PROPERTIES:
+:Img_url: %^{Image}
+:Author: %^{Author}
+:Pub_year: %^{Publication Year}
+:ISBN: %^{ISBN}
+:Publisher: %^{Publisher}
+:Address: %^{Publisher Address}
+:Date: %<%Y>
+:END:")
+
+
 
                               ("a" "anki")
                               ("am" "rossModernMandarinChinese2023" entry (file "~/my-files/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
@@ -578,6 +627,10 @@
 ;; SCRIPTING/PROG                                     ;;
 ;; -------------------------------------------------- ;;
 
+;; ac
+;; TODO learn to use ac properly
+(auto-complete-mode -1)
+
 ;; python
 (setq python-indent-guess-indent-offset nil)
 (setq python-indent-guess-indent-offset-verbose nil)
@@ -629,6 +682,7 @@
 (add-hook 'prog-mode-hook 'rainbow-mode)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'prog-mode-hook 'multiple-cursors-mode)
+
 
 ;; html mode hook
 (add-hook 'html-mode-hook 'display-line-numbers-mode)
@@ -692,6 +746,8 @@
           (call-process "open" nil 0 nil fpath)))
   (require 'org-ref)
   (define-key org-mode-map (kbd "C-= ]") 'org-ref-insert-link))
+
+;; (setq emacsql-sqlite-executable "/usr/bin/sqlite3")
 
 ;; org roam
 (use-package org-roam
@@ -792,6 +848,8 @@
 ;; generic bindings
 (global-set-key (kbd "<f5>" ) 'async-shell-command)
 (global-set-key (kbd "<f6>" ) 'org-capture)
+(global-set-key (kbd "<f7>" ) 'elfeed-tube-mpv)
+(global-set-key (kbd "<f8>" ) 'elfeed-tube-add-feeds)
 
 ;; TODO sort these out
 ;; TODO remove org bindings and use speed org
@@ -801,7 +859,7 @@
 (global-set-key (kbd "C-= R") 'org-refile)
 (global-set-key (kbd "C-c 0") 'org-insert-structure-template)
 (global-set-key (kbd "C-c W") 'widen)
-
+(global-set-key (kbd "M-g i") 'imenu)
 (define-key org-mode-map (kbd "C-c ]") 'org-ref-insert-link)
 
 (global-set-key (kbd "C-= a") 'org-agenda)
@@ -851,7 +909,6 @@
 (global-set-key (kbd "C-: s") 'my-set-cloze-counter)
 (global-set-key (kbd "C-: m") 'my-mark-and-run-my-anki-cloze)
 (global-set-key (kbd "C-: k") 'key-chord-mode)
-
 
 ;; -------------------------------------------------- ;;
 ;; SERVER                                             ;;
@@ -978,7 +1035,14 @@
  '(org-modules
    '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m org-checklist))
  '(package-selected-packages
-   '(sclang-extensions anki-editor org-roam-bibtex org-roam org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package)))
+   '(xquery-mode auto-complete-nxml csv-mode elfeed-tube-mpv elfeed-tube sclang-extensions anki-editor org-roam-bibtex org-roam org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package))
+ '(safe-local-variable-values
+   '((bibtex-completion-bibliography
+      '("~/my-files/books/visualisation-sleep/bib/bib.bib"))
+     (bibtex-completion-bibliography
+      '("~/my-files/zotero/bibliography.bib"))
+     (org-roam-db-location . "~/my-files/books/visualisation-sleep/notes/roam-db/org-roam.db")
+     (org-roam-directory . "~/my-files/books/visualisation-sleep/notes/roam"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
