@@ -468,7 +468,8 @@
                               ("tt" "quick-tomorrow" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
                               ("tr" "repeat" entry (file+headline "~/my-files/todo/TODO.org" "REPEAT-TASKS") "* REPEAT [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
 
-                              ("e" "Expense Entry" entry (file+datetree "~/my-files/todo/todo/home/ledger.org") "* %^{Expense name} %^g\n:PROPERTIES:\n:DATE: %T\n:END:\n")
+                              ("e" "Expense Entry" entry (file+datetree "~/my-files/todo/todo/home/ledger.org")
+                                 "* %^{Expense name} %^g\n:PROPERTIES:\n:DATE_ENTERED: %T\n:AMOUNT: %^{Amount}\n:END:\n")
                               
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
@@ -483,8 +484,6 @@
 :Address: %^{Publisher Address}
 :Date: %<%Y>
 :END:")
-
-
 
                               ("a" "anki")
                               ("am" "rossModernMandarinChinese2023" entry (file "~/my-files/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
@@ -1012,6 +1011,7 @@
      ("_Nginx" nginxfmt)
      ("_Snakemake" snakefmt)))
  '(org-agenda-files '("~/my-files/todo/todo/home/TODO.org"))
+ '(org-blank-before-new-entry '((heading) (plain-list-item)))
  '(org-latex-classes
    '(("article" "\\documentclass[11pt]{article}"
       ("\\section{%s}" . "\\section*{%s}")
