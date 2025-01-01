@@ -49,15 +49,6 @@
 (setq server-client-instructions nil)
 (setq tramp-auto-save-directory "~/my-files/emacs/backups")
 
-;; disable auto-save and backups for files opened via tramp
-;; TODO move this to function library
-(defun disable-auto-save-for-tramp ()
-  "Disable auto-save and backup for TRAMP connections."
-  (when (tramp-tramp-file-p (buffer-file-name))
-    (setq auto-save-default nil)
-    (setq make-backup-files nil)))
-(add-hook 'find-file-hook 'disable-auto-save-for-tramp)
-
 ;; backups tramp
 ;; TODO check this
 (add-to-list 'backup-directory-alist
@@ -737,8 +728,6 @@
   (require 'org-ref)
   (define-key org-mode-map (kbd "C-= ]") 'org-ref-insert-link))
 
-;; (setq emacsql-sqlite-executable "/usr/bin/sqlite3")
-
 ;; org roam
 (use-package org-roam
   :ensure t
@@ -912,9 +901,6 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(modus-vivendi))
- '(custom-safe-themes
-   '("b29ba9bfdb34d71ecf3322951425a73d825fb2c002434282d2e0e8c44fce8185" default))
  '(org-modules
    '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m org-checklist))
  '(package-selected-packages
