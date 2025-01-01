@@ -47,9 +47,10 @@
 ;; gpg, tramp and server
 (setq tramp-verbose 1)
 (setq server-client-instructions nil)
+(setq tramp-auto-save-directory "~/my-files/emacs/backups")
 
-;; Disable auto-save and backups for files opened via TRAMP
-(setq tramp-auto-save-directory "~/my-files/emacs/backups")   ;; or any other local directory for auto-save
+;; disable auto-save and backups for files opened via tramp
+;; TODO move this to function library
 (defun disable-auto-save-for-tramp ()
   "Disable auto-save and backup for TRAMP connections."
   (when (tramp-tramp-file-p (buffer-file-name))
@@ -57,6 +58,10 @@
     (setq make-backup-files nil)))
 (add-hook 'find-file-hook 'disable-auto-save-for-tramp)
 
+;; backups tramp
+;; TODO check this
+(add-to-list 'backup-directory-alist
+	     (cons tramp-file-name-regexp nil))
 
 ;; undo and deletion
 (setq undo-limit 800000)
@@ -90,10 +95,6 @@
 (setq auto-save-interval 30)
 (add-to-list 'backup-directory-alist
 	     (cons "." "~/my-files/emacs/backups/vanilla/"))
-
-;; backups tramp
-(add-to-list 'backup-directory-alist
-	     (cons tramp-file-name-regexp nil))
 
 ;; backup each save
 (use-package backup-each-save
@@ -131,29 +132,12 @@
 (setq recentf-exclude '("/\\(\\(\\(COMMIT\\|NOTES\\|PULLREQ\\|MERGEREQ\\|TAG\\)_EDIT\\|MERGE_\\|\\)MSG\\|\\(BRANCH\\|EDIT\\)_DESCRIPTION\\)\\'" "bookmark"))
 (setq recentf-filename-handlers '(abbreviate-file-name))
 
-;; golden ration
+;; golden ratio
 (use-package golden-ratio
   :ensure t
   :config
   (require 'golden-ratio)
   (golden-ratio-mode 1))
-
-;; -------------------------------------------------- ;;
-;; SuperCollider, SCLang                              ;;
-;; -------------------------------------------------- ;;
-
-(add-to-list 'load-path "~/.local/share/SuperCollider/downloaded-quarks/scel/el")
-(require 'sclang)
-(require 'w3m)
-
-;; TODO for some reason I am getting the error `SCLang: Error in
-;; command handler` with base install. Installing extensions seems to
-;; remover error(?)
-(use-package sclang-extensions
-  :ensure t
-  :config
-  (sclang-ac-mode -1))
-
 
 ;; -------------------------------------------------- ;;
 ;; REPEAT                                             ;;
@@ -335,7 +319,7 @@
 (use-package elfeed-tube-mpv
   ;; remember that yt-dlp in debian is quite old
   ;; mpv settings live in mpv.conf
-  :ensure t ;; or :straight t
+  :ensure t
   :bind (:map elfeed-show-mode-map
               ("C-c C-f" . elfeed-tube-mpv-follow-mode)
               ("C-c C-w" . elfeed-tube-mpv-where)))
@@ -385,15 +369,14 @@
 (setq diary-file "~/my-files/todo/home-agenda/diary-google")
 
 ;; tags (max 6)
-(setq org-tag-alist '(
-                      ("MUSIC" . ?m)
-                      ("ACADEMIC" . ?a)
-                      ("DEV" . ?d)
+(setq org-tag-alist '(("ZEN" . ?z)
+                      ("CAREER" . ?c)
+                      ("MISC" . ?m)
                       ("HOME" . ?h)
                       ("FAMILY" . ?f)
-                      ("WORK" . ?w)))
+                      ("HOBBY" . ?o)))
 
-;; org priorities
+;; org priorities (max 6)
 (setq org-enable-priority-commands t)
 (setq org-priority-start-cycle-with-default t)
 (setq org-highest-priority 1)
@@ -406,8 +389,7 @@
                            (?5 :foreground "#ffff00")
                            (?6 :foreground "#adff2f")))
 
-
-;; fancy priorities
+;; fancy priorities (max 6)
 (use-package org-fancy-priorities
   :ensure t
   :config
@@ -422,7 +404,12 @@
 ;; timer
 (setq org-timer-default-timer "25")
 
+;; alerts
+(use-package org-alert
+  :ensure t)
+
 ;; agenda custom commands
+;; TODO clean this up
 (setq org-agenda-custom-commands
       '(("a" "agenda"
    	 (
@@ -457,23 +444,24 @@
 		 (org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp))))))))) ;; org agenda custom commands ends here
 
 ;; org capture templates
+;; TODO clean this up and considering calling from external file
 (setq org-capture-templates '(
                               ("t" "todo")
-                              ("ts" "scheduled" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %?\nSCHEDULED: %^t DEADLINE: %^t\n")
-                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* [#3] WAITING %?\n")
-                              ("tr" "reminder" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* REMINDER [#3] %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
-                              ("tf" "fleeting" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/todo/todo/home/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
+                              ("ts" "scheduled" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %?\nSCHEDULED: %^t DEADLINE: %^t\n")
+                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* [#3] WAITING %?\n")
+                              ("tr" "reminder" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* REMINDER [#3] %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
+                              ("tf" "fleeting" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
+                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
                               ("tr" "repeat" entry (file+headline "~/my-files/todo/TODO.org" "REPEAT-TASKS") "* REPEAT [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
 
-                              ("e" "Expense Entry" entry (file+datetree "~/my-files/todo/todo/home/ledger.org")
+                              ("e" "Expense Entry" entry (file+datetree "~/my-files/org/todo/ledger.org")
                                  "* %^{Expense name} %^g\n:PROPERTIES:\n:DATE_ENTERED: %T\n:AMOUNT: %^{Amount}\n:END:\n")
                               
                               ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
 
-                              ("b" "book" entry (file "~/my-files/blog/org/reading-list.org")
+                              ("b" "book" entry (file "~/my-files/blog/website/org/reading-list.org")
 "* TODO %^{Book Title}
 :PROPERTIES:
 :Img_url: %^{Image}
@@ -487,7 +475,7 @@
 
                               ("a" "anki")
                               ("am" "rossModernMandarinChinese2023" entry (file "~/my-files/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
-                              ("ax" "xslt" entry (file "/home/ilmari/my-files/org/anki/xslt.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: xslt\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
+                              ("ax" "xslt" entry (file "~/my-files/org/anki/xslt.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: xslt\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
                               )) ;; org capture ends here
 
 ;; anki reset cloze hook after capture
@@ -506,6 +494,8 @@
 (setq org-latex-images-centered nil)
 (setq org-latex-toc-command "\\tableofcontents \\addtocontents{toc}{\\protect\\thispagestyle{empty}} \\newpage")
 (setq org-latex-pdf-process '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "bibtex %b" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f" "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+;; use below for cjk exports
 ;; (setq org-latex-pdf-process '(
 ;; "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
 ;; "bibtex %b"
@@ -544,9 +534,10 @@
 (setq org-outline-path-complete-in-steps nil)
 (setq org-refile-use-outline-path 'file)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
+(setq org-clock-sound "~/my-files/emacs/init/assets/audio/wood-block.wav")
 
 ;; org archive
-(setq org-archive-location "~/my-files/todo/TODO-archive.org::datetree/")
+(setq org-archive-location "~/my-files/org/todo/TODO-archive.org::datetree/")
 (setq org-archive-mark-done t)
 (setq org-archive-subtree-save-file-p t)
 
@@ -656,7 +647,6 @@
      ("+" "+")
      ("_" "_"))))
 
-
 ;; multiple cursors
 (use-package multiple-cursors
   :ensure t)
@@ -682,8 +672,7 @@
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'prog-mode-hook 'multiple-cursors-mode)
 
-
-;; html mode hook
+;; html mode hooks
 (add-hook 'html-mode-hook 'display-line-numbers-mode)
 (add-hook 'html-mode-hook 'electric-indent-mode)
 (add-hook 'html-mode-hook 'wrap-region-mode)
@@ -692,7 +681,7 @@
 (add-hook 'html-mode-hook 'rainbow-delimiters-mode)
 (add-hook 'html-mode-hook 'multiple-cursors-mode)
 
-;; nxml mode hook
+;; nxml mode hooks
 (add-hook 'nxml-mode-hook 'display-line-numbers-mode)
 (add-hook 'nxml-mode-hook 'electric-indent-mode)
 (add-hook 'nxml-mode-hook 'wrap-region-mode)
@@ -725,6 +714,8 @@
 ;; ROAM + REF                                         ;;
 ;; -------------------------------------------------- ;;
 
+;; TODO clean this up
+
 (use-package org-ref
   :ensure t
   :config
@@ -753,7 +744,7 @@
   :ensure t
   :config
   (setq org-roam-v2-ack t)
-  (setq org-roam-directory (file-truename "~/my-files/roam/"))
+  (setq org-roam-directory (file-truename "~/my-files/blog/roam/"))
   (setq org-roam-completion-everywhere t)
   (setq org-roam-node-display-template (concat "${type:15} | " (propertize "${tags:40}" 'face 'org-tag)" | ${title:*}"))
   (setq org-roam-db-node-include-function
@@ -764,7 +755,6 @@
           (not (member "ignore" (org-get-tags)))
           (not (member "NOEXPORT" (org-get-tags)))))
 
-
   (setq org-roam-capture-templates '(
                                      ("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t)
                                      ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)
@@ -772,9 +762,8 @@
                                      ("i" "index" plain "%?" :target (file+head "index/index-${slug}.org" "#+title: ${title}\n#+filetags: index\n") :unnarrowed t)
                                      ))
 
-(setq org-roam-dailies-directory "~/my-files/roam/fleeting"
+(setq org-roam-dailies-directory "~/my-files/blog/roam/fleeting"
       org-roam-dailies-capture-templates '(("f" "fleeting-notes" entry "\n* %<%Y-%m-%d %H:%M> - %?" :target (file "fleeting-notes.org"))))
-
 
   (add-to-list 'display-buffer-alist
 	       '("\\*org-roam\\*"
@@ -808,8 +797,7 @@
   (setq deft-recursive t)
   (setq deft-use-filter-string-for-filename t)
   (setq deft-default-extension "org")
-  (setq deft-directory "~/my-files/roam"))
-
+  (setq deft-directory "~/my-files/blog/roam"))
 
 (global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
 (global-set-key (kbd "C-c n f") 'org-roam-node-find)
@@ -832,6 +820,8 @@
 ;; -------------------------------------------------- ;;
 ;; BINDINGS                                           ;;
 ;; -------------------------------------------------- ;;
+
+;; TODO consolidate bindings
 
 ;; free keys
 (use-package free-keys
@@ -925,127 +915,8 @@
  '(custom-enabled-themes '(modus-vivendi))
  '(custom-safe-themes
    '("b29ba9bfdb34d71ecf3322951425a73d825fb2c002434282d2e0e8c44fce8185" default))
- '(format-all-default-formatters
-   '(("Assembly" asmfmt)
-     ("ATS" atsfmt)
-     ("Bazel" buildifier)
-     ("BibTeX" emacs-bibtex)
-     ("C" clang-format)
-     ("C#" csharpier)
-     ("C++" clang-format)
-     ("Cabal Config" cabal-fmt)
-     ("Clojure" zprint)
-     ("CMake" cmake-format)
-     ("Crystal" crystal)
-     ("CSS" prettier)
-     ("Cuda" clang-format)
-     ("D" dfmt)
-     ("Dart" dart-format)
-     ("Dhall" dhall)
-     ("Dockerfile" dockfmt)
-     ("Elixir" mix-format)
-     ("Elm" elm-format)
-     ("Emacs Lisp" emacs-lisp)
-     ("Erlang" efmt)
-     ("F#" fantomas)
-     ("Fish" fish-indent)
-     ("Fortran Free Form" fprettify)
-     ("GLSL" clang-format)
-     ("Go" gofmt)
-     ("GraphQL" prettier)
-     ("Haskell" brittany)
-     ("HCL" hclfmt)
-     ("HTML" html-tidy)
-     ("HTML+EEX" mix-format)
-     ("HTML+ERB" erb-format)
-     ("Hy" emacs-hy)
-     ("Java" clang-format)
-     ("JavaScript" prettier)
-     ("JSON" prettier)
-     ("JSON5" prettier)
-     ("Jsonnet" jsonnetfmt)
-     ("JSX" prettier)
-     ("Kotlin" ktlint)
-     ("LaTeX" /usr/bin/latexindent)
-     ("Less" prettier)
-     ("Literate Haskell" brittany)
-     ("Lua" lua-fmt)
-     ("Markdown" prettier)
-     ("Meson" muon-fmt)
-     ("Nix" nixpkgs-fmt)
-     ("Objective-C" clang-format)
-     ("OCaml" ocp-indent)
-     ("Perl" perltidy)
-     ("PHP" prettier)
-     ("Protocol Buffer" clang-format)
-     ("PureScript" purty)
-     ("Python" black)
-     ("R" styler)
-     ("Reason" bsrefmt)
-     ("ReScript" rescript)
-     ("Ruby" rufo)
-     ("Rust" rustfmt)
-     ("Scala" scalafmt)
-     ("SCSS" prettier)
-     ("Shell" shfmt)
-     ("Solidity" prettier)
-     ("SQL" sqlformat)
-     ("Svelte" prettier)
-     ("Swift" swiftformat)
-     ("Terraform" terraform-fmt)
-     ("TOML" prettier)
-     ("TSX" prettier)
-     ("TypeScript" prettier)
-     ("V" v-fmt)
-     ("Verilog" istyle-verilog)
-     ("Vue" prettier)
-     ("XML" html-tidy)
-     ("YAML" prettier)
-     ("Zig" zig)
-     ("_Angular" prettier)
-     ("_Beancount" bean-format)
-     ("_Caddyfile" caddy-fmt)
-     ("_Flow" prettier)
-     ("_Gleam" gleam)
-     ("_Ledger" ledger-mode)
-     ("_Nginx" nginxfmt)
-     ("_Snakemake" snakefmt)))
- '(org-agenda-files '("~/my-files/todo/todo/home/TODO.org"))
- '(org-blank-before-new-entry '((heading) (plain-list-item)))
- '(org-latex-classes
-   '(("article" "\\documentclass[11pt]{article}"
-      ("\\section{%s}" . "\\section*{%s}")
-      ("\\subsection{%s}" . "\\subsection*{%s}")
-      ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-      ("\\paragraph{%s}" . "\\paragraph*{%s}")
-      ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))
-     ("report" "\\documentclass[11pt]{report}"
-      ("\\part{%s}" . "\\part*{%s}")
-      ("\\chapter{%s}" . "\\chapter*{%s}")
-      ("\\section{%s}" . "\\section*{%s}")
-      ("\\subsection{%s}" . "\\subsection*{%s}")
-      ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
-     ("book" "\\documentclass[11pt]{book}"
-      ("\\part{%s}" . "\\part*{%s}")
-      ("\\chapter{%s}" . "\\chapter*{%s}")
-      ("\\section{%s}" . "\\section*{%s}")
-      ("\\subsection{%s}" . "\\subsection*{%s}")
-      ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))
-     ("letter" "\\documentclass[11pt]{letter}")))
  '(org-modules
    '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m org-checklist))
  '(package-selected-packages
-   '(xquery-mode auto-complete-nxml csv-mode elfeed-tube-mpv elfeed-tube sclang-extensions anki-editor org-roam-bibtex org-roam org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package))
- '(safe-local-variable-values
-   '((bibtex-completion-bibliography
-      '("~/my-files/books/visualisation-sleep/bib/bib.bib"))
-     (bibtex-completion-bibliography
-      '("~/my-files/zotero/bibliography.bib"))
-     (org-roam-db-location . "~/my-files/books/visualisation-sleep/notes/roam-db/org-roam.db")
-     (org-roam-directory . "~/my-files/books/visualisation-sleep/notes/roam"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+   '(org-alert xquery-mode auto-complete-nxml csv-mode elfeed-tube-mpv elfeed-tube sclang-extensions anki-editor org-roam-bibtex org-roam org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package))
+
