@@ -358,6 +358,7 @@
 (setq holiday-hebrew-holidays nil)
 (setq holiday-islamic-holidays nil)
 (setq diary-file "~/my-files/todo/home-agenda/diary-google")
+(setq org-agenda-files '("~/my-files/org/todo/TODO.org"))
 
 ;; tags (max 6)
 (setq org-tag-alist '(("ZEN" . ?z)
@@ -526,6 +527,7 @@
 (setq org-refile-use-outline-path 'file)
 (setq org-refile-allow-creating-parent-nodes 'confirm)
 (setq org-clock-sound "~/my-files/emacs/init/assets/audio/wood-block.wav")
+(setq alert-default-style 'libnotify)
 
 ;; org archive
 (setq org-archive-location "~/my-files/org/todo/TODO-archive.org::datetree/")
@@ -894,15 +896,19 @@
 (server-start)
 
 ;; -------------------------------------------------- ;;
-;; ADDED BY EMACS                                     ;;
+;; EMACS CUSTOM                                       ;;
 ;; -------------------------------------------------- ;;
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-modules
-   '(ol-bbdb ol-bibtex ol-docview ol-doi ol-eww ol-gnus ol-info ol-irc ol-mhe ol-rmail ol-w3m org-checklist))
- '(package-selected-packages
-   '(org-alert xquery-mode auto-complete-nxml csv-mode elfeed-tube-mpv elfeed-tube sclang-extensions anki-editor org-roam-bibtex org-roam org-ml ebib citar-denote citar dired-narrow marginalia org-cite denote lua-mode modus-themes free-keys magit multiple-cursors format-all wrap-region rainbow-delimiters rainbow-mode expand-region org-journal org-static-blog org-wc org-pomodoro org-ref org-fancy-priorities engine-mode deft elfeed-org elfeed key-chord writegood-mode wc-mode move-text palimpsest openwith orderless vertico golden-ratio backup-each-save org-contrib use-package))
-
+ '(custom-enabled-themes '(modus-vivendi))
+ '(custom-safe-themes
+   '("2e7dc2838b7941ab9cabaa3b6793286e5134f583c04bde2fba2f4e20f2617cf7" default)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
