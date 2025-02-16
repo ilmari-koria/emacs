@@ -1,18 +1,4 @@
-;; vanilla emacs attempt
-
-(require 'package)
-(add-to-list 'package-archives '("melpa"  . "https://melpa.org/packages/")     t)
-(add-to-list 'package-archives '("gnu"    . "https://elpa.gnu.org/packages/")  t)
-(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t)
-(package-initialize)
-(package-refresh-contents)
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
-(use-package org
-  :ensure org-contrib
-  :demand t)
-
+;; vanilla emacs attempt (except for magit)
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
 (setq sentence-end-double-space nil)
@@ -144,18 +130,19 @@
 		 (org-tags-match-list-sublevels t)
 		 (org-agenda-skip-function '(org-agenda-skip-if nil '(timestamp)))))))))
 
+
 (setq org-capture-templates '(
-                              ("t" "todo")
-                              ("ts" "scheduled" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %?\nSCHEDULED: %^t DEADLINE: %^t\n")
-                              ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* [#3] WAITING %?\n")
-                              ("tr" "reminder" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* REMINDER [#3] %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
-                              ("tf" "fleeting" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tq" "quick-clock-in" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
-                              ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
-                              ("tt" "quick-tomorrow" entry (file+headline "~/my-files/org/todo/TODO.org" "TASK-INDEX") "* TODO [#3] %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
-                              ("tr" "repeat" entry (file+headline "~/my-files/todo/TODO.org" "REPEAT-TASKS") "* REPEAT [#3] %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
-                              ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
-                              ("b" "book" entry (file "~/my-files/blog/website/org/reading-list.org")
+("t" "todo")
+("ts" "scheduled" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* TODO %?\nSCHEDULED: %^t DEADLINE: %^t\n")
+("tw" "unscheduled-waiting" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* WAITING %?\n")
+("tr" "reminder" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* REMINDER %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
+("tf" "fleeting" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* TODO %^{Description} :FLEETING:\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+("tq" "quick-clock-in" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :clock-in t :clock-keep t :immediate-finish t)
+("tn" "quick-no-clock-in" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
+("tt" "quick-tomorrow" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* TODO %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
+("tr" "repeat" entry (file+headline "~/my-files/todo/TODO.org" "REPEAT-TASKS") "* REPEAT %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
+("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
+("b" "book" entry (file "~/my-files/website/org/reading-list.org")
 "* TODO %^{Book Title}
 :PROPERTIES:
 :Img_url: %^{Image}
@@ -166,15 +153,15 @@
 :Address: %^{Publisher Address}
 :Date: %<%Y>
 :END:")
-
-                              ("a" "anki")
-                              ("am" "rossModernMandarinChinese2023" entry (file "~/my-files/org/anki/rossModernMandarinChinese2023.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: rossModernMandarinChinese2023\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
-                              ("ax" "xslt" entry (file "~/my-files/org/anki/xslt.org") "\n* %<%Y%m%d%H%M%S>\n:PROPERTIES:\n:ANKI_NOTE_TYPE: xslt\n:END:\n** %^{Heading}\n%^{Text}\n" :immediate-finish t :jump-to-captured t)
-                              ))
+))
 
 
 
 (add-hook 'org-capture-after-finalize-hook 'my-reset-cloze-counter)
+
+
+(global-set-key (kbd "<f5>" ) 'org-agenda)
+(global-set-key (kbd "<f6>" ) 'org-capture)
 
 ;; pool
 
@@ -198,7 +185,6 @@
 
 ;; ;; dired
 ;; (setq dired-listing-switches "-AGFhlv --group-directories-first --time-style=long-iso")
-;; (put 'dired-find-alternate-file 'disabled nil)
 
 ;; ;; backups vanilla
 ;; (setq auto-save-interval 30)
@@ -262,3 +248,17 @@
 
 
 (server-start)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(s magit emacsql-sqlite3 emacsql-sqlite xquery-mode writegood-mode wrap-region wc-mode vertico use-package rainbow-mode rainbow-delimiters pdf-tools palimpsest org-wc org-roam org-ref org-pomodoro org-journal org-fancy-priorities org-contrib org-alert orderless openwith multiple-cursors move-text marginalia key-chord golden-ratio free-keys expand-region engine-mode elfeed-tube-mpv elfeed-org dired-narrow backup-each-save)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+(put 'dired-find-alternate-file 'disabled nil)
