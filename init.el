@@ -1,4 +1,4 @@
-;; vanilla emacs attempt (except for magit)
+;; vanilla emacs attempt (except for magit + modus themese)
 (setq inhibit-startup-screen t)
 (setq ring-bell-function 'ignore)
 (setq sentence-end-double-space nil)
@@ -26,6 +26,15 @@
 (setq holiday-bahai-holidays nil)
 (setq holiday-hebrew-holidays nil)
 (setq holiday-islamic-holidays nil)
+(setq auto-save-interval 30)
+(setq dired-listing-switches "-AGFhlv --group-directories-first --time-style=long-iso")
+(setq auth-sources '("~/.authinfo.gpg"))
+(setq ediff-keep-variants nil)
+(setq ediff-make-buffers-readonly-at-startup nil)
+(setq ediff-merge-revisions-with-ancestor t)
+(setq ediff-show-clashes-only t)
+(setq ediff-split-window-function 'split-window-horizontally)
+(setq ediff-window-setup-function 'ediff-setup-windows-plain)
 
 (setq-default indent-tabs-mode nil)
 (setq-default indicate-empty-lines t)
@@ -155,110 +164,35 @@
 :END:")
 ))
 
-
-
-(add-hook 'org-capture-after-finalize-hook 'my-reset-cloze-counter)
-
-
 (global-set-key (kbd "<f5>" ) 'org-agenda)
 (global-set-key (kbd "<f6>" ) 'org-capture)
 
-;; pool
 
-;; use below for cjk exports
-;; (setq org-latex-pdf-process '(
-;; "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;; "bibtex %b"
-;; "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;; "xelatex -shell-escape -interaction nonstopmode -output-directory %o %f"
-;; ))
+(put 'dired-find-alternate-file 'disabled nil)
 
-;; ;; backups tramp
-;; ;; TODO check this
-;; (add-to-list 'backup-directory-alist
-;; 	     (cons tramp-file-name-regexp nil))
-
-;; ;; region
-;; (put 'downcase-region 'disabled nil)
-;; (put 'upcase-region 'disabled nil)
-;; (put 'narrow-to-region 'disabled nil)
-
-;; ;; dired
-;; (setq dired-listing-switches "-AGFhlv --group-directories-first --time-style=long-iso")
-
-;; ;; backups vanilla
-;; (setq auto-save-interval 30)
-;; (add-to-list 'backup-directory-alist
-;; 	     (cons "." "~/my-files/emacs/backups/vanilla/"))
+(add-to-list 'backup-directory-alist
+ 	     (cons "." "~/my-files/emacs/backups/vanilla/"))
 
 
-;; ;; load path
-;; ;; TODO check best practice for load path
-;; (add-to-list 'load-path "~/my-files/emacs/init/my-elisp/")
-;; (load "helper-functions.el")
-
-;; ;; recentf
-;; (recentf-mode t)
-;; (setq recentf-max-menu-items 10)
-;; (setq recentf-max-saved-items 50)
-;; (setq recentf-exclude '("/\\(\\(\\(COMMIT\\|NOTES\\|PULLREQ\\|MERGEREQ\\|TAG\\)_EDIT\\|MERGE_\\|\\)MSG\\|\\(BRANCH\\|EDIT\\)_DESCRIPTION\\)\\'" "bookmark"))
-;; (setq recentf-filename-handlers '(abbreviate-file-name))
-
-
-
-;; ;; (describe-repeat-maps)
-;; ;; see more maps "https://www.reddit.com/r/emacs/comments/1adwnse/repeatmode_is_awesome_share_you_useful_configs/"
-;; (use-package repeat
-;;   :config
-;;   (setq repeat-on-final-keystroke t)
-;;   (setq set-mark-command-repeat-pop t)
-;;   (repeat-mode 1)
-
-;;   (defvar buffer-navigation-map
-;;     (let ((map (make-sparse-keymap)))
-;;       (define-key map (kbd "n") #'next-line)
-;;       (define-key map (kbd "p") #'previous-line)
-;;       (define-key map (kbd "f") #'forward-word)
-;;       (define-key map (kbd "b") #'backward-word)
-;;       (define-key map (kbd "d") #'scroll-up-command)
-;;       (define-key map (kbd "u") #'scroll-down-command)
-;;       map))
-
-;;   (dolist (cmd '(next-line previous-line forward-word backward-word scroll-up-command scroll-down-command))
-;;     (put cmd 'repeat-map 'buffer-navigation-map)))
-
-
-;; (require 'epa-file)
-;; (epa-file-enable)
-;; (setq auth-sources '("~/.authinfo.gpg"))
-
-;; (setq ediff-keep-variants nil)
-;; (setq ediff-make-buffers-readonly-at-startup nil)
-;; (setq ediff-merge-revisions-with-ancestor t)
-;; (setq ediff-show-clashes-only t)
-;; (setq ediff-split-window-function 'split-window-horizontally)
-;; (setq ediff-window-setup-function 'ediff-setup-windows-plain)
-
-
-;; (setq TeX-auto-save t)
-;; (setq TeX-parse-self t)
-;; (setq TeX-PDF-mode t)
-;; (setq reftex-plug-into-AUCTeX t)
-;; (setq TeX-source-correlate-start-server t)
-
+(require 'epa-file)
+(epa-file-enable)
 
 (server-start)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(modus-vivendi))
+ '(custom-safe-themes
+   '("2e7dc2838b7941ab9cabaa3b6793286e5134f583c04bde2fba2f4e20f2617cf7" default))
  '(package-selected-packages
-   '(s magit emacsql-sqlite3 emacsql-sqlite xquery-mode writegood-mode wrap-region wc-mode vertico use-package rainbow-mode rainbow-delimiters pdf-tools palimpsest org-wc org-roam org-ref org-pomodoro org-journal org-fancy-priorities org-contrib org-alert orderless openwith multiple-cursors move-text marginalia key-chord golden-ratio free-keys expand-region engine-mode elfeed-tube-mpv elfeed-org dired-narrow backup-each-save)))
+   '(modus-themes s magit emacsql-sqlite3 emacsql-sqlite xquery-mode writegood-mode wrap-region wc-mode vertico use-package rainbow-mode rainbow-delimiters pdf-tools palimpsest org-wc org-roam org-ref org-pomodoro org-journal org-fancy-priorities org-contrib org-alert orderless openwith multiple-cursors move-text marginalia key-chord golden-ratio free-keys expand-region engine-mode elfeed-tube-mpv elfeed-org dired-narrow backup-each-save)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(put 'dired-find-alternate-file 'disabled nil)
+
