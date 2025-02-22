@@ -1,6 +1,12 @@
-;; vanilla emacs attempt (except for magit + modus themese)
-;; (sort-lines)
-
+;; =====================
+;; vanilla emacs attempt
+;; =====================
+;; except for:
+;; - magit
+;; - modus-themes
+;; - org-contrib
+;; =====================
+   
 (setq auth-sources '("~/.authinfo.gpg"))
 (setq auto-save-interval 30)
 (setq delete-by-moving-to-trash t)
@@ -37,6 +43,11 @@
 (setq user-mail-address "ilmarikoria@posteo.net")
 (setq warning-minimum-level :emergency)
 (setq word-wrap-by-category t)
+(setq auto-mode-alist
+      (append
+       '(("\\.xq\\'" . prog-mode)
+         ("\\.xqm\\'" . prog-mode))
+       auto-mode-alist))
 
 (setq org-agenda-files '("~/my-files/todo/TODO.org"))
 (setq org-agenda-include-diary nil)
@@ -149,7 +160,6 @@
 (global-set-key (kbd "<f5>" ) 'org-agenda)
 (global-set-key (kbd "<f6>" ) 'org-capture)
 
-
 (put 'dired-find-alternate-file 'disabled nil)
 
 (add-to-list 'backup-directory-alist
@@ -177,8 +187,9 @@
 (blink-cursor-mode -1)
 (column-number-mode t)
 
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 
-
+(require 'org-checklist)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -189,13 +200,17 @@
  '(custom-safe-themes
    '("2e7dc2838b7941ab9cabaa3b6793286e5134f583c04bde2fba2f4e20f2617cf7" default))
  '(package-selected-packages
-   '(modus-themes s magit emacsql-sqlite3 emacsql-sqlite xquery-mode writegood-mode wrap-region wc-mode vertico use-package rainbow-mode rainbow-delimiters pdf-tools palimpsest org-wc org-roam org-ref org-pomodoro org-journal org-fancy-priorities org-contrib org-alert orderless openwith multiple-cursors move-text marginalia key-chord golden-ratio free-keys expand-region engine-mode elfeed-tube-mpv elfeed-org dired-narrow backup-each-save)))
+   '(modus-themes s magit emacsql-sqlite3 emacsql-sqlite xquery-mode writegood-mode wrap-region wc-mode vertico use-package rainbow-mode rainbow-delimiters pdf-tools palimpsest org-wc org-roam org-ref org-pomodoro org-journal org-fancy-priorities org-contrib org-alert orderless openwith multiple-cursors move-text marginalia key-chord golden-ratio free-keys expand-region engine-mode elfeed-tube-mpv elfeed-org dired-narrow backup-each-save))
+ '(safe-local-variable-values
+   '((org-capture-templates
+      ("c" "feed" entry
+       (file+headline "/home/ilmari/my-files/c7767/website/org/feed.org" "feed")
+       "* %<%Y-%m-%dT%H:%M:%S>\12 - %?")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
 
 (server-start)
