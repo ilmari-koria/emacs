@@ -1,10 +1,11 @@
-;; =====================
-;; vanilla emacs attempt
-;; =====================
-;; except for:
+;; ===================================
+;; vanilla/minial emacs config attempt
+;; ===================================
+;; vanilla except for:
 ;; - magit
 ;; - modus-themes
 ;; - org-contrib
+;; - xquery-mode
 ;; =====================
    
 (setq auth-sources '("~/.authinfo.gpg"))
@@ -134,7 +135,7 @@
 
 
 (setq org-capture-templates '(
-("t" "todo")
+("t" "TODO")
 ("ts" "scheduled" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* TODO %?\nSCHEDULED: %^t DEADLINE: %^t\n")
 ("tw" "unscheduled-waiting" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* WAITING %?\n")
 ("tr" "reminder" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* REMINDER %^{Description} :REMINDER:\nSCHEDULED: <%<%Y-%m-%d %a>>\n" :immediate-finish t)
@@ -144,6 +145,7 @@
 ("tt" "quick-tomorrow" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* TODO %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
 ("tr" "repeat" entry (file+headline "~/my-files/todo/TODO.org" "REPEAT-TASKS") "* REPEAT %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
 ("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
+("p" "Project 3")
 ("b" "book" entry (file "~/my-files/website/org/reading-list.org")
 "* TODO %^{Book Title}
 :PROPERTIES:
