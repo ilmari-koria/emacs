@@ -16,6 +16,12 @@
   :ensure org-contrib
   :demand t)
 
+(use-package magit
+  :ensure t)
+
+(use-package xquery-mode
+  :ensure t)
+
 (use-package vertico
   :ensure t
   :config
@@ -273,27 +279,3 @@
 (global-set-key (kbd "C-c n r") 'org-journal-search-forever)
 
 (server-start)
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(modus-vivendi))
- '(custom-safe-themes
-   '("2e7dc2838b7941ab9cabaa3b6793286e5134f583c04bde2fba2f4e20f2617cf7" default))
- '(package-selected-packages
-   '(modus-themes s magit emacsql-sqlite3 emacsql-sqlite xquery-mode writegood-mode wrap-region wc-mode vertico use-package rainbow-mode rainbow-delimiters pdf-tools palimpsest org-wc org-roam org-ref org-pomodoro org-journal org-fancy-priorities org-contrib org-alert orderless openwith multiple-cursors move-text marginalia key-chord golden-ratio free-keys expand-region engine-mode elfeed-tube-mpv elfeed-org dired-narrow backup-each-save))
- '(safe-local-variable-values
-   '((org-capture-templates
-      ("c" "feed" entry
-       (file+headline "/home/ilmari/my-files/c7767/website/org/feed.org" "feed")
-       "* %<%Y-%m-%dT%H:%M:%S>\12 - %?")))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-
