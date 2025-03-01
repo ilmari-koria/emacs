@@ -1,12 +1,70 @@
 ;; ===================================
-;; vanilla/minial emacs config attempt
+;; emacs init
 ;; ===================================
-;; vanilla except for:
-;; - magit
-;; - modus-themes
-;; - org-contrib
-;; - xquery-mode
-;; =====================
+
+(require 'package)
+(add-to-list 'package-archives '("melpa"  . "https://melpa.org/packages/")     t)
+(add-to-list 'package-archives '("gnu"    . "https://elpa.gnu.org/packages/")  t)
+(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t)
+(package-initialize)
+(package-refresh-contents)
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+
+(use-package org
+  :ensure org-contrib
+  :demand t)
+
+(use-package vertico
+  :ensure t
+  :config
+  (vertico-mode)
+  (setq vertico-scroll-margin 0)
+  (setq vertico-count 20)
+  (setq vertico-resize nil)
+  (setq vertico-cycle t))
+
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-overrides '((file (styles basic partial-completion)))))
+
+(use-package marginalia
+  :ensure t)
+
+(use-package multiple-cursors
+  :ensure t)
+
+(use-package org-ref
+  :ensure t
+  :config
+  (setq org-ref-activate-cite-links t)
+  (setq org-ref-cite-insert-version 2)
+  (setq bibtex-completion-bibliography '("/tmp/bibliography.bib")))
+
+(use-package org-roam
+  :ensure t
+  :config
+  (setq org-roam-v2-ack t)
+  (setq org-roam-directory (file-truename "~/my-files/blog/roam"))
+  (setq org-roam-completion-everywhere t)
+  (setq org-roam-capture-templates '(
+    ("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t)
+    ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)
+    ("r" "reference" plain "%?" :target (file+head "reference/%<%Y-%m-%d>-reference-${citekey}.org" "#+title: ${citekey} - ${title}\n#+filetags: %^{TAGS}\n\n--\n + ") :unnarrowed t)
+    ("i" "index" plain "%?" :target (file+head "index/index-${slug}.org" "#+title: ${title}\n#+filetags: index\n") :unnarrowed t)))
+  (setq org-roam-dailies-directory "~/my-files/blog/roam/fleeting"
+        org-roam-dailies-capture-templates '(("f" "fleeting-notes" entry "\n* %<%Y-%m-%d %H:%M> - %?" :target (file "fleeting-notes.org"))))
+  (org-roam-db-autosync-mode))
+
+(use-package org-roam-bibtex
+  :ensure t
+  :after org-roam
+  :config
+  (setq orb-insert-follow-link t)
+  (add-hook 'after-init-hook 'org-roam-bibtex-mode))
    
 (setq auth-sources '("~/.authinfo.gpg"))
 (setq auto-save-interval 30)
@@ -193,6 +251,29 @@
 
 (require 'org-checklist)
 
+(global-set-key (kbd "C-M-j") 'mc/mark-all-dwim)
+(global-set-key (kbd "C-M-c") 'mc/edit-lines)
+(global-set-key (kbd "C-M-l") 'er/expand-region)
+(global-set-key (kbd "C-M-/") 'mc/mark-all-like-this)
+(global-set-key (kbd "C-M-,") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-M-.") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-M->") 'mc/skip-to-previous-like-this)
+(global-set-key (kbd "C-M-<") 'mc/skip-to-next-like-this)
+(global-set-key (kbd "C-M-s") 'just-one-space)
+(global-set-key (kbd "C-M-y") 'mc/insert-numbers) ;; (C-u-1-0) -- also (rectangle-number-lines)
+(global-set-key (kbd "C-'") 'mc/hide-unmatched-lines-mode)
+(global-set-key (kbd "C-M-n") 'electric-newline-and-maybe-indent)
+(global-set-key (kbd "C-c n l") 'org-roam-buffer-toggle)
+(global-set-key (kbd "C-c n f") 'org-roam-node-find)
+(global-set-key (kbd "C-c n g") 'org-roam-graph)
+(global-set-key (kbd "C-c n i") 'org-roam-node-insert)
+(global-set-key (kbd "C-c n c") 'org-roam-capture)
+(global-set-key (kbd "C-c n d") 'org-roam-dailies-capture-today)
+(global-set-key (kbd "C-c n j") 'org-journal-new-entry)
+(global-set-key (kbd "C-c n r") 'org-journal-search-forever)
+
+(server-start)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -215,4 +296,4 @@
  ;; If there is more than one, they won't work right.
  )
 
-(server-start)
+
