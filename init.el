@@ -54,6 +54,7 @@
   :ensure t
   :config
   (setq org-roam-v2-ack t)
+  (setq org-roam-node-display-template (concat "${type:15} | " (propertize "${tags:40}" 'face 'org-tag)" | ${title:*}"))
   (setq org-roam-directory (file-truename "~/my-files/blog/roam"))
   (setq org-roam-completion-everywhere t)
   (setq org-roam-capture-templates '(
@@ -63,7 +64,31 @@
     ("i" "index" plain "%?" :target (file+head "index/index-${slug}.org" "#+title: ${title}\n#+filetags: index\n") :unnarrowed t)))
   (setq org-roam-dailies-directory "~/my-files/blog/roam/fleeting"
         org-roam-dailies-capture-templates '(("f" "fleeting-notes" entry "\n* %<%Y-%m-%d %H:%M> - %?" :target (file "fleeting-notes.org"))))
+  (setq org-roam-db-node-include-function
+      (lambda ()
+        (not (member "ATTACH" (org-get-tags)))
+        (not (member "attach" (org-get-tags)))
+        (not (member "noexport" (org-get-tags)))
+        (not (member "ignore" (org-get-tags)))
+        (not (member "NOEXPORT" (org-get-tags)))))
+    (add-to-list 'display-buffer-alist
+	       '("\\*org-roam\\*"
+                 (display-buffer-in-direction)
+                 (direction . right)
+                 (window-width . 0.5)
+                 (window-height . fit-window-to-buffer)))
+  (cl-defmethod org-roam-node-type ((node org-roam-node))
+    "Return the TYPE of NODE."
+    (condition-case nil
+        (file-name-nondirectory (directory-file-name
+			         (file-name-directory
+                                  (file-relative-name (org-roam-node-file node) org-roam-directory))))
+      (error "")))
   (org-roam-db-autosync-mode))
+
+(defun my-org-capture-at-point ()
+  (interactive)
+  (org-capture 0))
 
 (use-package org-roam-bibtex
   :ensure t
@@ -208,7 +233,7 @@
 ("tn" "quick-no-clock-in" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* TODO %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a>>" :immediate-finish t)
 ("tt" "quick-tomorrow" entry (file+headline "~/my-files/todo/TODO.org" "TASK-INDEX") "* TODO %^{Description} %^g\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+1d\"))" :immediate-finish t)
 ("tr" "repeat" entry (file+headline "~/my-files/todo/TODO.org" "REPEAT-TASKS") "* REPEAT %^{Description} %^g\nSCHEDULED: <%<%Y-%m-%d %a .+1d>>\n:PROPERTIES:\n:REPEAT_TO_STATE: REPEAT\n:END:")
-("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?.")
+("n" "note-at-point" plain (file "") " - (%^{location}) Here it says that %?." :immediate-finish t)
 ("p" "Project 3")
 ("b" "book" entry (file "~/my-files/website/org/reading-list.org")
 "* TODO %^{Book Title}
@@ -275,7 +300,19 @@
 (global-set-key (kbd "C-c n i") 'org-roam-node-insert)
 (global-set-key (kbd "C-c n c") 'org-roam-capture)
 (global-set-key (kbd "C-c n d") 'org-roam-dailies-capture-today)
-(global-set-key (kbd "C-c n j") 'org-journal-new-entry)
-(global-set-key (kbd "C-c n r") 'org-journal-search-forever)
+(global-set-key (kbd "C-c n p") 'my-org-capture-at-point)
 
 (server-start)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-enabled-themes '(modus-vivendi))
+ '(package-selected-packages nil))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
