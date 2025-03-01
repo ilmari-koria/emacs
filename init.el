@@ -279,6 +279,9 @@
 (column-number-mode t)
 
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'org-mode-hook 'visual-line-mode)
+(add-hook 'org-mode-hook 'hl-line-mode)
+(add-hook 'org-mode-hook 'display-line-numbers-mode)
 
 (require 'org-checklist)
 
@@ -302,6 +305,10 @@
 (global-set-key (kbd "C-c n d") 'org-roam-dailies-capture-today)
 (global-set-key (kbd "C-c n p") 'my-org-capture-at-point)
 
+;; keep C-. modifier for user bindings
+(global-set-key (kbd "C-. v") 'visual-line-mode)
+
+
 (server-start)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -309,7 +316,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(modus-vivendi))
- '(package-selected-packages nil))
+ '(package-selected-packages
+   '(emacsql-sqlite emacsql-sqlite3 free-keys magit marginalia
+                    multiple-cursors orderless org-contrib org-ref
+                    org-roam-bibtex vertico xquery-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
