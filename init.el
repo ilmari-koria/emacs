@@ -12,14 +12,14 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-(use-package org
-  :ensure org-contrib
-  :demand t)
-
 (use-package magit
-  :ensure t)
+  :ensure t
+  :config)
 
 (use-package xquery-mode
+  :ensure t)
+
+(use-package org-contrib
   :ensure t)
 
 (use-package vertico
@@ -51,12 +51,14 @@
   (setq bibtex-completion-bibliography '("/tmp/bibliography.bib")))
 
 (use-package org-roam
+  ;; in debian emacs v28, roam needs libsqlite3-dev and elpa-emacsql-sqlite3. gcc is probably needed too.
   :ensure t
   :config
   (setq org-roam-v2-ack t)
   (setq org-roam-node-display-template (concat "${type:15} | " (propertize "${tags:40}" 'face 'org-tag)" | ${title:*}"))
-  (setq org-roam-directory (file-truename "~/my-files/blog/roam"))
+  (setq org-roam-directory (file-truename "/home/ilmari/my-files/blog/roam"))
   (setq org-roam-completion-everywhere t)
+  (setq org-roam-db-location (expand-file-name (locate-user-emacs-file "org-roam.db")))
   (setq org-roam-capture-templates '(
     ("b" "blog-draft" plain "%?" :target (file+head "blog-drafts/%<%Y-%m-%d>-blog-draft-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n#+DESCRIPTION: %^{short description}\n#+date: <%<%Y-%m-%d %H:%M>>\n* Introduction\n* par2\n* par3\n* par4\n* par5\n* par6\n* par7\n* Conclusion\n* Timestamp :ignore:\n =This blog post was last updated on {{{time(%b %e\\, %Y)}}}.=\n* References :ignore:\n#+BIBLIOGRAPHY: bibliography.bib plain option:-a option:-noabstract option:-heveaurl limit:t\n* Footnotes :ignore:\n* Text-dump :noexport:") :unnarrowed t)
     ("p" "permanent" plain "%?" :target (file+head "permanent/%<%Y-%m-%d>-permanent-${slug}.org" "#+title: ${title}\n#+filetags: %^{TAGS}\n\n - [ ] One subject, signified by the title.\n - [ ] Wording that is independent of any other topic.\n - [ ] Between 100-200 words.\n\n--\n + ") :unnarrowed t)
@@ -307,7 +309,7 @@
 
 ;; keep C-. modifier for user bindings
 (global-set-key (kbd "C-. v") 'visual-line-mode)
-
+(global-set-key (kbd "C-. r") 'org-ref-insert-link)
 
 (server-start)
 (custom-set-variables
@@ -317,9 +319,7 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(modus-vivendi))
  '(package-selected-packages
-   '(emacsql-sqlite emacsql-sqlite3 free-keys magit marginalia
-                    multiple-cursors orderless org-contrib org-ref
-                    org-roam-bibtex vertico xquery-mode)))
+   '(magit emacsql-sqlite emacsql-sqlite3 marginalia multiple-cursors orderless org org-contrib org-ref org-roam-bibtex vertico xquery-mode)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
