@@ -3,9 +3,9 @@
 ;; ===================================
 
 (require 'package)
-(add-to-list 'package-archives '("melpa"  . "https://melpa.org/packages/")     t)
-(add-to-list 'package-archives '("gnu"    . "https://elpa.gnu.org/packages/")  t)
-(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t)
+;; (add-to-list 'package-archives '("melpa"  . "https://melpa.org/packages/")     t)
+;; (add-to-list 'package-archives '("gnu"    . "https://elpa.gnu.org/packages/")  t)
+;; (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t)
 (package-initialize)
 (package-refresh-contents)
 (unless (package-installed-p 'use-package)
@@ -51,7 +51,6 @@
   (setq bibtex-completion-bibliography '("/tmp/bibliography.bib")))
 
 (use-package org-roam
-  ;; in debian emacs v28, roam needs libsqlite3-dev and elpa-emacsql-sqlite3. gcc is probably needed too.
   :ensure t
   :config
   (setq org-roam-v2-ack t)
@@ -154,7 +153,7 @@
 (setq org-default-priority 3)
 (setq org-directory "~/my-files/todo/")
 (setq org-enable-priority-commands t)
-(setq org-export-preserve-breaks t)
+(setq org-export-preserve-breaks nil)
 (setq org-export-with-section-numbers nil)
 (setq org-export-with-smart-quotes t)
 (setq org-export-with-sub-superscripts t)
@@ -310,16 +309,26 @@
 ;; keep C-. modifier for user bindings
 (global-set-key (kbd "C-. v") 'visual-line-mode)
 (global-set-key (kbd "C-. r") 'org-ref-insert-link)
+(global-set-key (kbd "C-. i") 'indent-region)
+(global-set-key (kbd "C-. c") 'comment-region)
+(global-set-key (kbd "C-. u") 'uncomment-region)
+(global-set-key (kbd "C-. b") 'revert-buffer)
+(global-set-key (kbd "C-. l") 'display-line-numbers-mode)
 
 (server-start)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(modus-vivendi))
- '(package-selected-packages
-   '(magit emacsql-sqlite emacsql-sqlite3 marginalia multiple-cursors orderless org org-contrib org-ref org-roam-bibtex vertico xquery-mode)))
+ '(safe-local-variable-values
+   '((org-capture-templates
+      ("c" "feed" entry
+       (file+headline
+        "/home/ilmari/my-files/c7767/website/org/feed.org" "feed")
+       "* %<%Y-%m-%dT%H:%M:%S>\12 - %?")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
